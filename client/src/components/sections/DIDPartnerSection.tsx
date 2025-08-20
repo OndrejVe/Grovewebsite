@@ -33,21 +33,27 @@ export function DIDPartnerSection() {
     }
   ];
 
-  const techFeatures = [
+  const partnershipHighlights = [
     {
-      icon: Zap,
-      label: language === 'cs' ? 'Ultra-nízká latence' : 'Ultra-low latency',
-      value: '< 300ms'
+      title: language === 'cs' ? 'Prof. Richard projekt' : 'Prof. Richard Project',
+      description: language === 'cs' 
+        ? 'Úspěšně jsme vyvinuli AI doktora pro hematologii s CME a IACH' 
+        : 'Successfully developed AI doctor for hematology with CME and IACH',
+      icon: '🩺'
     },
     {
-      icon: Shield,
-      label: language === 'cs' ? 'Enterprise security' : 'Enterprise security',
-      value: 'SOC2'
+      title: language === 'cs' ? 'Pokročilé integrace' : 'Advanced Integrations',
+      description: language === 'cs' 
+        ? 'Propojujeme D-ID avatary s firemními systémy a databázemi' 
+        : 'Connecting D-ID avatars with corporate systems and databases',
+      icon: '🔗'
     },
     {
-      icon: Clock,
-      label: language === 'cs' ? 'Doba integrace' : 'Integration time',
-      value: '2-4 týdny'
+      title: language === 'cs' ? 'Kompletní řešení' : 'Complete Solutions',
+      description: language === 'cs' 
+        ? 'Od konceptu přes vývoj až po nasazení v produkci' 
+        : 'From concept through development to production deployment',
+      icon: '🚀'
     }
   ];
 
@@ -153,7 +159,7 @@ export function DIDPartnerSection() {
           </motion.div>
         </div>
 
-        {/* Technical Specs */}
+        {/* Partnership Success Stories */}
         <motion.div 
           className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-200 dark:border-gray-700"
           initial={{ opacity: 0, y: 20 }}
@@ -162,34 +168,40 @@ export function DIDPartnerSection() {
           viewport={{ once: true }}
         >
           <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 text-center">
-            {language === 'cs' ? 'Technické parametry' : 'Technical Specifications'}
+            {language === 'cs' ? 'Naše D-ID projekty v praxi' : 'Our D-ID Projects in Practice'}
           </h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {techFeatures.map((feature, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            {partnershipHighlights.map((highlight, index) => (
               <motion.div 
                 key={index}
-                className="text-center p-4 rounded-lg bg-white/80 dark:bg-gray-700/50"
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
+                className="text-center p-6 rounded-lg bg-white/80 dark:bg-gray-700/50 border border-gray-100 dark:border-gray-600"
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
                 viewport={{ once: true }}
               >
-                <feature.icon className="w-8 h-8 text-brand-blue mx-auto mb-3" />
-                <div className="font-bold text-2xl text-gray-900 dark:text-gray-100 mb-1">
-                  {feature.value}
-                </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  {feature.label}
-                </div>
+                <div className="text-3xl mb-3">{highlight.icon}</div>
+                <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                  {highlight.title}
+                </h4>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  {highlight.description}
+                </p>
               </motion.div>
             ))}
           </div>
-          
-          <div className="text-center mt-8">
+
+          <div className="text-center bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 rounded-xl p-6">
+            <p className="text-gray-700 dark:text-gray-300 mb-4">
+              {language === 'cs' 
+                ? 'Zajímá vás, jak můžeme D-ID technologie využít ve vašem projektu?' 
+                : 'Interested in how we can use D-ID technologies in your project?'
+              }
+            </p>
             <a href="#contact">
               <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3">
-                {language === 'cs' ? 'Vyzkoušet AI Avatary' : 'Try AI Avatars'}
+                {language === 'cs' ? 'Promluvme si o vašem projektu' : 'Let\'s discuss your project'}
               </Button>
             </a>
           </div>
