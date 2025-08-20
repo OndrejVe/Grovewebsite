@@ -1,0 +1,56 @@
+Vytvoř moderní firemní web pro společnost **GROVE TECH AI s.r.o.**  
+Použij **Next.js + Tailwind CSS**.  
+Web musí být **dvojjazyčný (CZ/EN)** s možností přepínání vlajkou v headeru.  
+Použij barevnou paletu podle loga (černá/bílá/šedá + akcent modrá/zelená).
+
+## Struktura webu
+1. **Homepage (/)**  
+   - Hero sekce s naším logem a textem:  
+     *„Tam, kde ostatní končí, my teprve začínáme. AI jako motor vašeho růstu.“*  
+   - CTA tlačítka: *Zjistit více* (anchor About) + *Kontaktujte nás*  
+   - Krátký přehled use cases (AI Concierge, AI Knowledge Assistant, AI E-commerce Guide, AI Sommelier).  
+   - Mini KPI blok:  
+     - *20+ nasazených AI řešení v praxi*  
+     - *Vývoj a integrace do 5 různých odvětví*  
+     - *Exkluzivní partnerství s D-ID*  
+     - *Od analýzy po škálovatelnou produkci*  
+
+2. **O nás (/about)**  
+   - Text:  
+     „Jsme tým expertů na umělou inteligenci a automatizaci.  
+     Nepřipoutáváme se k jednomu LLM – vždy volíme model a technologii, která nejlépe sedí na projekt.  
+     Specializujeme se na integrace do reálných procesů – od hotelů přes zdravotnictví až po e-commerce.“  
+   - Hodnoty: inovace, rychlost, spolehlivost.  
+   - Timeline/diagram (vývojářské prvky):  
+     Analýza → Prototyp → API integrace → Testování → Škálování.  
+
+3. **Use Cases (/usecases)**  
+   Landing pages pro každý případ (samostatné podstránky):
+   - AI Concierge pro hotely
+   - AI Knowledge Assistant pro firmy
+   - AI E-commerce Guide
+   - AI Sommelier (doporučení vína podle chuti, jídla, ceny)
+   Každý případ: hero obrázek/ikona, popis řešení, přínosy, CTA.  
+
+4. **Kontakt (/contact)**  
+   - Formulář (jméno, e-mail, zpráva → POST na /api/contact → e-mail přes Cloudflare Email Routing).  
+   - Info blok:  
+     Tel: +420 604 132 233  
+     E-mail: info@grovetechai.com  
+     IČO: 21707146  
+     DIČ: CZ21707146  
+     Adresa: Varšavská 715/36, Praha 2 – Vinohrady, 120 00  
+
+5. **GDPR & Privacy (/gdpr)**  
+   - Stránka „Zásady zpracování osobních údajů“ (text v češtině i angličtině).  
+
+## Další požadavky
+- Responsivní design (mobil/desktop).  
+- Light/Dark theme (automaticky podle OS, s přepínačem).  
+- Ikony: použij **Tabler Icons** (ne GPT default).  
+- Animace: Framer Motion pro hero a CTA.  
+- Vlož diagram realizace (SVG/React komponenta) do About.  
+- Připrav `.env.local.example` s placeholderem pro e-mail routing.  
+- Build kompatibilní s Cloudflare Pages (`npm run build`, output `.next`).  
+
+Cílem je **moderní AI web s wow efektem**, který jasně komunikuje technologii i obchodní přínosy.

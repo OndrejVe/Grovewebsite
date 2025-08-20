@@ -1,0 +1,854 @@
+# === Grove Tech AI - Full Scaffold (Next.js 14 + Tailwind + Cloudflare Pages Functions) ===
+# Vytvoří i18n CZ/EN, SEO, JSON-LD, Use Cases se FAQ, Contact form (Turnstile + MailChannels),
+# Plausible (cookieless), Trust-bar, KPI, robots/sitemap, self-host sprite ikon (Tabler placeholdery).
+
+# 0) Dir tree
+mkdir -p app/{cs,en}/{about,contact,privacy,thanks,use-cases/{hotel-concierge,ecommerce-concierge,knowledge-assistant,ai-sommelier}} components functions/api lib public/{icons,images} styles
+
+# 1) package.json
+cat > package.json <<'EOF'
+{
+  "name": "grovetechai-cloudflare",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "echo 'no linter configured yet'"
+  },
+  "dependencies": {
+    "framer-motion": "11.3.31",
+    "next": "14.2.11",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "zod": "3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "20.14.11",
+    "@types/react": "18.3.5",
+    "autoprefixer": "10.4.20",
+    "postcss": "8.4.41",
+    "tailwindcss": "3.4.10",
+    "typescript": "5.6.2"
+  }
+}
+EOF
+
+# 2) Next/Tailwind/TS config
+cat > next.config.js <<'EOF'
+/** @type {import("next").NextConfig} */
+const nextConfig = {
+  output: "standalone",
+  experimental: { typedRoutes: true }
+};
+module.exports = nextConfig;
+EOF
+
+cat > tailwind.config.ts <<'EOF'
+import type { Config } from "tailwindcss";
+export default {
+  content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}"],
+  theme: {
+    extend: {
+      colors: {
+        brand: {
+          50:"#FFF5F5",100:"#FFE3E3",200:"#FFC2C2",300:"#FF9B9B",
+          400:"#FF6B6B",500:"#FF2D2D",600:"#E02424",700:"#C81E1E",
+          800:"#9B1C1C",900:"#7F1D1D"
+        }
+      }
+    }
+  },
+  plugins: []
+} satisfies Config;
+EOF
+
+cat > postcss.config.js <<'EOF'
+module.exports = { plugins: { tailwindcss: {}, autoprefixer: {} } };
+EOF
+
+cat > tsconfig.json <<'EOF'
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["ES2020","DOM","DOM.Iterable"],
+    "jsx": "preserve",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "noEmit": true,
+    "strict": true,
+    "baseUrl": ".",
+    "paths": { "@/*": ["./*"] }
+  },
+  "include": ["app","components","functions","styles","lib","next-env.d.ts"]
+}
+EOF
+
+printf '%s\n' '@tailwind base; @tailwind components; @tailwind utilities;
+:root { color-scheme: light; }
+html,body { height:100%; }
+.prose a { text-decoration: underline; }' > styles/globals.css
+:> next-env.d.ts
+
+# 3) Helpers (SEO) + StructuredData
+cat > lib/seo.ts <<'EOF'
+export const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+export const LOCALES = ["cs","en"] as const;
+export type Lang = (typeof LOCALES)[number];
+
+export function urlFor(lang:Lang, path="") {
+  const clean = path.startsWith("/") ? path : `/${path}`;
+  return `${SITE}/${lang}${clean==="//" ? "" : clean}`;
+}
+export function alternatesFor(path="") {
+  return {
+    canonical: urlFor("cs", path),
+    languages: { "cs-CZ": urlFor("cs", path), "en-US": urlFor("en", path) }
+  } as const;
+}
+export function ogBase(lang:Lang, title:string, description:string) {
+  return { title, description, url: urlFor(lang), siteName: "Grove Tech AI", type: "website" } as const;
+}
+export function twitterBase(title:string, description:string) {
+  return { card: "summary_large_image", title, description } as const;
+}
+EOF
+
+cat > components/StructuredData.tsx <<'EOF'
+export function StructuredData({ data }:{ data: Record<string,unknown> }) {
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />;
+}
+EOF
+
+# 4) Icon sprite (Tabler placeholders) + Icon component
+cat > public/icons/sprite.svg <<'EOF'
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <!-- TODO: nahraď pathy originály z Tabler Icons (MIT) -->
+  <symbol id="mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 7l9 6 9-6"/><rect x="3" y="5" width="18" height="14" rx="2"/>
+  </symbol>
+  <symbol id="phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 4h4l2 5-2 1a11 11 0 0 0 5 5l1-2 5 2v4a2 2 0 0 1-2 2 16 16 0 0 1-14-14 2 2 0 0 1 2-2"/>
+  </symbol>
+  <symbol id="arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+    <path d="M5 12h14M13 18l6-6-6-6"/>
+  </symbol>
+  <symbol id="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+    <path d="M5 12l5 5L20 7"/>
+  </symbol>
+  <symbol id="brain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+    <path d="M8 3a3 3 0 0 0-3 3v3a3 3 0 0 0 3 3v7"/><path d="M16 3a3 3 0 0 1 3 3v3a3 3 0 0 1-3 3v7"/><path d="M12 4v17"/>
+  </symbol>
+  <symbol id="shield-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+    <path d="M12 3l7 4v5a9 9 0 1 1-14 0V7l7-4"/><rect x="9" y="12" width="6" height="5" rx="1"/><path d="M12 12v-1a1 1 0 0 1 2 0v1"/>
+  </symbol>
+  <symbol id="rocket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+    <path d="M4 13l5 1 1 5 6-6-6-6-5 1 1 5z"/><path d="M15 9l-6 6"/>
+  </symbol>
+  <symbol id="handshake" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+    <path d="M12 12l3 3 5-5-3-3-5 5-3-3-5 5 3 3 5-5"/>
+  </symbol>
+  <symbol id="cpu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+    <rect x="5" y="5" width="14" height="14" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v4M15 1v4M9 19v4M15 19v4M1 9h4M1 15h4M19 9h4M19 15h4"/>
+  </symbol>
+  <symbol id="database" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+    <ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.7 4 3 9 3s9-1.3 9-3V5M3 11v6c0 1.7 4 3 9 3s9-1.3 9-3v-6"/>
+  </symbol>
+  <symbol id="server" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+    <rect x="3" y="4" width="18" height="6" rx="2"/><rect x="3" y="14" width="18" height="6" rx="2"/><path d="M7 8h.01M7 18h.01"/>
+  </symbol>
+  <symbol id="bulb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+    <path d="M8 14a6 6 0 1 1 8 0l-1 1.5V18H9v-2.5L8 14"/><path d="M9 22h6"/>
+  </symbol>
+  <symbol id="flask" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+    <path d="M9 3h6M10 3v6l-5 9h14l-5-9V3"/>
+  </symbol>
+  <symbol id="chart-line-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+    <path d="M3 19h18M4 15l5-5 4 4 6-6"/>
+  </symbol>
+</svg>
+EOF
+
+cat > components/Icon.tsx <<'EOF'
+export function Icon({ name, size=20, className="", stroke=1.75 }:{
+  name:string; size?:number; className?:string; stroke?:number
+}) {
+  return (
+    <svg width={size} height={size} className={className} aria-hidden="true">
+      <use href={`/icons/sprite.svg#${name}`} />
+      <style>{`svg { stroke-width:${stroke}; }`}</style>
+    </svg>
+  );
+}
+EOF
+
+# 5) Layout + Home + basic header/footer + Plausible + Org JSON-LD
+cat > app/layout.tsx <<'EOF'
+import "./../styles/globals.css";
+import { StructuredData } from "@/components/StructuredData";
+
+const ORG = {
+  "@context":"https://schema.org","@type":"Organization","name":"Grove Tech AI s.r.o.",
+  "url":"https://grovetechai.com","logo":"https://grovetechai.com/images/logo.svg",
+  "contactPoint":[
+    {"@type":"ContactPoint","contactType":"customer support","email":"info@grovetechai.com"},
+    {"@type":"ContactPoint","contactType":"sales","email":"sales@grovetechai.com"},
+    {"@type":"ContactPoint","contactType":"technical support","email":"support@grovetechai.com"}
+  ]
+};
+
+export default function RootLayout({ children }:{ children: React.ReactNode }) {
+  const plausibleDomain = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN;
+  return (
+    <html lang="cs">
+      <head>
+        <link rel="icon" href="/images/logo.svg" />
+        {plausibleDomain && (
+          <script defer data-domain={plausibleDomain} src="https://plausible.io/js/script.js"></script>
+        )}
+      </head>
+      <body className="bg-white text-neutral-900">
+        <StructuredData data={ORG} />
+        <div className="max-w-6xl mx-auto px-4">
+          <header className="py-5 flex items-center justify-between">
+            <a href="/cs" className="flex items-center gap-2">
+              <img src="/images/logo.svg" alt="Grove Tech AI" className="h-8"/><span className="font-semibold">Grove Tech AI</span>
+            </a>
+            <nav className="text-sm flex gap-5 items-center">
+              <a href="/cs/use-cases">Use Cases</a>
+              <a href="/cs/about">O nás</a>
+              <a href="/cs/contact">Kontakt</a>
+              <span className="mx-2 text-neutral-400">|</span>
+              <a href="/cs" className="underline">CZ</a>
+              <a href="/en" className="underline">EN</a>
+            </nav>
+          </header>
+        </div>
+        {children}
+        <footer className="mt-20 border-t">
+          <div className="max-w-6xl mx-auto px-4 py-10 grid gap-6 sm:grid-cols-3 text-sm">
+            <div>
+              <div className="font-semibold">Grove Tech AI</div>
+              <p className="mt-2">AI vývojáři a akcelerátor. PoC → produkce → provoz.</p>
+              <p className="mt-3"><b>E‑mail:</b> <a className="underline" href="mailto:info@grovetechai.com">info@grovetechai.com</a><br/>
+              <b>Podpora:</b> <a className="underline" href="mailto:support@grovetechai.com">support@grovetechai.com</a></p>
+            </div>
+            <div>
+              <b>IČO:</b> 217 07 146<br/><b>DIČ:</b> CZ 217 07 146<br/>Varšavská 715/36, Praha 2 – Vinohrady, 120 00
+            </div>
+            <div>
+              <a className="underline" href="/cs/privacy">Zásady zpracování osobních údajů</a><br/>
+              <a className="underline" target="_blank" href="https://www.linkedin.com/company/grove-tech-ai">LinkedIn</a>
+            </div>
+          </div>
+        </footer>
+      </body>
+    </html>
+  );
+}
+EOF
+
+# Home (root / redirects to CZ quick welcome)
+cat > app/page.tsx <<'EOF'
+export default function Page(){ return (
+  <main className="container mx-auto max-w-6xl px-4 py-20 text-center">
+    <h1 className="text-5xl font-bold">Kde jiní končí, my teprve začínáme.</h1>
+    <p className="mt-4 text-lg text-neutral-700">AI vývojáři, systémoví integrátoři a technologický akcelerátor.</p>
+    <div className="mt-8 flex justify-center gap-3">
+      <a className="inline-flex items-center gap-2 rounded-lg border px-4 py-2" href="/cs/use-cases">Use Cases</a>
+      <a className="inline-flex items-center gap-2 rounded-lg border px-4 py-2" href="/cs/contact">Kontakt</a>
+    </div>
+  </main>
+); }
+EOF
+
+# Simple CZ/EN home
+cat > app/cs/page.tsx <<'EOF'
+export default function Page(){ return (
+  <main className="container mx-auto max-w-6xl px-4 py-20 text-center">
+    <h1 className="text-5xl font-bold">Kde jiní končí, my teprve začínáme.</h1>
+    <p className="mt-4 text-lg text-neutral-700">AI vývojáři, systémoví integrátoři a technologický akcelerátor.</p>
+    <div className="mt-8 flex justify-center gap-3">
+      <a className="inline-flex items-center gap-2 rounded-lg border px-4 py-2" href="/cs/use-cases">Use Cases</a>
+      <a className="inline-flex items-center gap-2 rounded-lg border px-4 py-2" href="/cs/contact">Kontakt</a>
+    </div>
+  </main>
+); }
+EOF
+
+cat > app/en/page.tsx <<'EOF'
+export default function Page(){ return (
+  <main className="container mx-auto max-w-6xl px-4 py-20 text-center">
+    <h1 className="text-5xl font-bold">Where others stop, we’re just getting started.</h1>
+    <p className="mt-4 text-lg text-neutral-700">AI engineers, systems integrators and a technology accelerator.</p>
+    <div className="mt-8 flex justify-center gap-3">
+      <a className="inline-flex items-center gap-2 rounded-lg border px-4 py-2" href="/en/use-cases">Use Cases</a>
+      <a className="inline-flex items-center gap-2 rounded-lg border px-4 py-2" href="/en/contact">Contact</a>
+    </div>
+  </main>
+); }
+EOF
+
+# 6) Shared components: CTA, TrustBar, KPI, FAQ, FAQJsonLd, Timeline, UseCaseFAQ, UseCaseJsonLd, LeadForm
+cat > components/CTASection.tsx <<'EOF'
+export function CTASection({ lang="cs" }:{lang?:"cs"|"en"}) {
+  return (
+    <section className="mt-16 text-center">
+      <div className="rounded-2xl border p-8 bg-white">
+        <h3 className="text-2xl font-semibold">{lang==="cs"?"Přidejte se k firmám, které dělají z AI konkurenční výhodu.":"Join companies turning AI into an edge."}</h3>
+        <p className="mt-2 text-neutral-700">{lang==="cs"?"Propojíme strategii, prototyp a škálování.":"We connect strategy, prototype and scale."}</p>
+        <a href={`/${lang}/contact`} className="inline-block mt-5 rounded-lg bg-brand-500 text-white px-5 py-2">{
+          lang==="cs"?"Kontaktovat":"Contact us"}</a>
+      </div>
+    </section>
+  );
+}
+EOF
+
+cat > components/TrustBar.tsx <<'EOF'
+import { Icon } from "@/components/Icon";
+export function TrustBar({ lang="cs" }:{lang?:"cs"|"en"}) {
+  const items = lang==="cs"
+    ? [{icon:"shield-lock",text:"Security first"},{icon:"brain",text:"Vendor‑agnostic AI"},{icon:"rocket",text:"Od PoC k produkci"},{icon:"handshake",text:"Dlouhodobé partnerství"}]
+    : [{icon:"shield-lock",text:"Security first"},{icon:"brain",text:"Vendor‑agnostic AI"},{icon:"rocket",text:"From PoC to production"},{icon:"handshake",text:"Long‑term partnership"}];
+  return (<div className="mt-8"><div className="rounded-2xl border bg-white px-4 py-3"><ul className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+    {items.map((it,i)=>(<li key={i} className="flex items-center gap-2 text-sm">
+      <span className="inline-flex h-7 w-7 items-center justify-center rounded-full border bg-white"><Icon name={it.icon} size={18}/></span><span>{it.text}</span>
+    </li>))}
+  </ul></div></div>);
+}
+EOF
+
+cat > components/KPIRow.tsx <<'EOF'
+export function KPIRow({ lang="cs" }:{lang?:"cs"|"en"}) {
+  const data = lang==="cs"
+    ? [{value:"−25 %",label:"méně support tiketů"},{value:"+12 %",label:"vyšší průměrná hodnota objednávky"},{value:"≤6 týdnů",label:"do nasazení do produkce"}]
+    : [{value:"−25%",label:"fewer support tickets"},{value:"+12%",label:"higher average order value"},{value:"≤6 weeks",label:"to production deployment"}];
+  return (<div className="mt-8 grid gap-6 sm:grid-cols-3">
+    {data.map((k,i)=>(<div key={i} className="rounded-2xl border bg-white px-4 py-6 text-center shadow-sm">
+      <div className="text-3xl font-bold">{k.value}</div><div className="mt-1 text-sm text-neutral-600">{k.label}</div>
+    </div>))}
+  </div>);
+}
+EOF
+
+cat > components/FAQ.tsx <<'EOF'
+export type QA = { q:string; a:string };
+export function FAQ({ lang="cs" }:{lang?:"cs"|"en"}) {
+  const items: QA[] = lang==="cs"
+  ? [
+      { q:"Jak vybíráte LLM? OpenAI, Mistral, Gemini nebo LLaMA?", a:"Jsme vendor‑agnostic. Vybíráme model podle cíle projektu, kvality, nákladů, latence a požadavků na data/compliance."},
+      { q:"Jak rychle se dostaneme do produkce?", a:"Typicky 4–8 týdnů: strategie (1–2), prototyp (1–2), build & integrace (2–4), pak škálování."},
+      { q:"Kdo vlastní data a kde běží inference?", a:"Data zůstávají u klienta. Inference: cloud, on‑prem nebo hybrid. Přístupy a audit respektujeme."},
+      { q:"Jak řešíte bezpečnost a compliance?", a:"Segmentace, řízení přístupů, šifrování, audit logy, secret vaulty, GDPR alignment."},
+      { q:"Co když PoC nebudeme chtít rozšiřovat?", a:"PoC je nízkonákladové ověření. Pokud nepokračujete, výstupy předáme pro vaše využití."}
+    ]
+  : [
+      { q:"How do you select an LLM? OpenAI, Mistral, Gemini or LLaMA?", a:"We’re vendor‑agnostic. We choose by goals, task quality, cost, latency and data/compliance."},
+      { q:"How fast to production?", a:"Typically 4–8 weeks: strategy (1–2), prototype (1–2), build & integration (2–4), then scale."},
+      { q:"Who owns data and where does inference run?", a:"Client controls data. Inference: cloud, on‑prem or hybrid. We respect access controls and audit."},
+      { q:"Security & compliance?", a:"Segmentation, access control, encryption, audit logs, secrets vault, GDPR alignment."},
+      { q:"What if we stop after the PoC?", a:"Low‑risk validation by design. If you stop, we hand over all outputs and insights."}
+    ];
+  return (<section className="mt-16">
+    <h2 className="text-2xl font-semibold">{lang==="cs"?"Často kladené otázky":"Frequently Asked Questions"}</h2>
+    <div className="mt-6 divide-y border rounded-2xl bg-white">
+      {items.map((it,i)=>(
+        <details key={i} className="group p-4 open:bg-white/60">
+          <summary className="cursor-pointer list-none font-medium leading-6">{it.q}<span className="float-right transition group-open:rotate-45">+</span></summary>
+          <p className="mt-2 text-sm text-neutral-700">{it.a}</p>
+        </details>
+      ))}
+    </div>
+  </section>);
+}
+EOF
+
+cat > components/FAQJsonLd.tsx <<'EOF'
+import { StructuredData } from "@/components/StructuredData";
+import type { QA } from "./FAQ";
+export function FAQJsonLd({ lang="cs", items }:{lang?:"cs"|"en"; items: QA[]}) {
+  const data = { "@context":"https://schema.org", "@type":"FAQPage", inLanguage: lang,
+    mainEntity: items.map(it=>({ "@type":"Question", name: it.q, acceptedAnswer:{ "@type":"Answer", text: it.a } })) };
+  return <StructuredData data={data} />;
+}
+EOF
+
+cat > components/Timeline.tsx <<'EOF'
+import { Icon } from "@/components/Icon";
+export function Timeline({ lang="cs" }:{lang?:"cs"|"en"}) {
+  const t = lang==="cs" ? {
+    steps:[{n:1,title:"Strategie & návrh",desc:"Pochopíme byznys.",icon:"bulb"},{n:2,title:"Prototyp",desc:"Rychlá validace.",icon:"flask"},{n:3,title:"Vývoj & integrace",desc:"Napojení na systémy.",icon:"code"},{n:4,title:"Škálování",desc:"Monitoring & SLA.",icon:"chart-line-up"}],
+    weeks:[{w:"Week 1–2",title:"Strategie & Design",color:"text-brand-700 bg-brand-50"},{w:"Week 3–4",title:"Prototyp",color:"text-green-700 bg-green-50"},{w:"Week 5–8",title:"Build & Integrate",color:"text-purple-700 bg-purple-50"},{w:"Week 9+",title:"Scale & Support",color:"text-orange-700 bg-orange-50"}],
+    headline:"Timeline: od nápadu k nasazení", sub:"Typická projektová osa"
+  } : {
+    steps:[{n:1,title:"Strategy & Design",desc:"Understand business.",icon:"bulb"},{n:2,title:"Prototype",desc:"Fast validation.",icon:"flask"},{n:3,title:"Build & Integrate",desc:"Connect systems.",icon:"code"},{n:4,title:"Scale",desc:"Monitoring & SLAs.",icon:"chart-line-up"}],
+    weeks:[{w:"Week 1–2",title:"Strategy & Design",color:"text-brand-700 bg-brand-50"},{w:"Week 3–4",title:"Prototype",color:"text-green-700 bg-green-50"},{w:"Week 5–8",title:"Build & Integrate",color:"text-purple-700 bg-purple-50"},{w:"Week 9+",title:"Scale & Support",color:"text-orange-700 bg-orange-50"}],
+    headline:"Timeline: From idea to deployment", sub:"Typical project timeline"
+  };
+  return (<section className="mt-16">
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      {t.steps.map(s=>(
+        <div key={s.n} className="text-center">
+          <div className="mx-auto w-12 h-12 rounded-xl bg-white shadow-sm grid place-items-center border"><Icon name={s.icon} size={22}/></div>
+          <div className="mt-3 text-sm font-semibold">{s.title}</div>
+          <div className="mt-1 text-xs text-neutral-600">{s.desc}</div>
+        </div>
+      ))}
+    </div>
+    <div className="mt-10 rounded-2xl border p-6">
+      <h3 className="text-xl font-semibold text-center">{t.headline}</h3>
+      <p className="text-sm text-neutral-600 text-center mt-1">{t.sub}</p>
+      <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+        {t.weeks.map((b,i)=>(<div key={i} className={`rounded-xl p-5 text-center ${b.color} border`}>
+          <div className="text-2xl font-bold">{b.w}</div><div className="text-sm mt-1">{b.title}</div>
+        </div>))}
+      </div>
+    </div>
+  </section>);
+}
+EOF
+
+# LeadForm + Turnstile
+cat > components/LeadForm.tsx <<'EOF'
+"use client";
+import Script from "next/script";
+import { useState } from "react";
+
+export function LeadForm({ lang="cs" }:{lang?:"cs"|"en"}) {
+  const [status, setStatus] = useState<"idle"|"loading"|"ok"|"error">("idle");
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>){
+    e.preventDefault(); setStatus("loading");
+    const fd = new FormData(e.currentTarget);
+    const payload = Object.fromEntries(fd.entries());
+    const res = await fetch("/api/contact", { method:"POST", headers:{ "content-type":"application/json" }, body: JSON.stringify(payload) });
+    if(res.ok){ setStatus("ok"); window.location.href = `/${lang}/thanks`; } else { setStatus("error"); }
+  }
+  return (
+    <div className="rounded-2xl border p-6 bg-white">
+      <form onSubmit={onSubmit} className="grid gap-4">
+        <input className="border rounded px-3 py-2" name="name" placeholder={lang==="cs"?"Jméno":"Name"} required/>
+        <input className="border rounded px-3 py-2" name="email" type="email" placeholder="Email" required/>
+        <input className="border rounded px-3 py-2" name="company" placeholder={lang==="cs"?"Společnost":"Company"}/>
+        <textarea className="border rounded px-3 py-2" name="message" rows={5} placeholder={lang==="cs"?"Zpráva":"Message"} required/>
+        <input type="hidden" name="cf_turnstile_token" id="cf_token" />
+        <div className="cf-turnstile" data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY||"TEST"} data-callback="onTurnstile"></div>
+        <button disabled={status==="loading"} className="rounded bg-brand-500 text-white px-4 py-2">{status==="loading"?(lang==="cs"?"Odesílám…":"Sending…"):(lang==="cs"?"Odeslat":"Send")}</button>
+        {status==="error" && <p className="text-red-600 text-sm">{lang==="cs"?"Odeslání se nezdařilo. Zkuste to znovu.":"Failed to send. Try again."}</p>}
+      </form>
+      <Script id="turnstile" src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer />
+      <Script id="turnstile-callback">{`window.onTurnstile = function(token){ var el = document.getElementById("cf_token"); if(el) el.value = token; }`}</Script>
+    </div>
+  );
+}
+EOF
+
+# 7) About pages (CZ/EN) s Trust/KPI/FAQ/Timeline
+cat > app/cs/about/page.tsx <<'EOF'
+import { CTASection } from "@/components/CTASection";
+import { Timeline } from "@/components/Timeline";
+import { Icon } from "@/components/Icon";
+import { StructuredData } from "@/components/StructuredData";
+import { TrustBar } from "@/components/TrustBar";
+import { KPIRow } from "@/components/KPIRow";
+import { FAQ } from "@/components/FAQ";
+import { FAQJsonLd } from "@/components/FAQJsonLd";
+import { alternatesFor, ogBase, twitterBase, SITE } from "@/lib/seo";
+
+export function generateMetadata() {
+  const title = "O nás | Grove Tech AI";
+  const description = "Jsme akcelerátor AI projektů. Od strategie přes prototyp až po škálování.";
+  return { title, description, alternates: alternatesFor("/about"), openGraph: ogBase("cs", title, description), twitter: twitterBase(title, description) };
+}
+function JsonLd() {
+  const data = { "@context":"https://schema.org", "@type":"AboutPage", name:"O nás", inLanguage:"cs", url:`${SITE}/cs/about`, description:"Grove Tech AI – akcelerátor AI projektů. Od strategie po škálování." };
+  return <StructuredData data={data} />;
+}
+export default function Page(){
+  const faqItems = [
+    { q:"Jak vybíráte LLM? OpenAI, Mistral, Gemini nebo LLaMA?", a:"Jsme vendor‑agnostic. Vybíráme model podle cíle projektu, kvality, nákladů, latence a požadavků na data/compliance." },
+    { q:"Jak rychle se dostaneme do produkce?", a:"Typicky 4–8 týdnů: strategie (1–2), prototyp (1–2), build & integrace (2–4), pak škálování." },
+    { q:"Kdo vlastní data a kde běží inference?", a:"Data zůstávají u klienta. Inference: cloud, on‑prem nebo hybrid. Přístupy a audit respektujeme." },
+    { q:"Jak řešíte bezpečnost a compliance?", a:"Segmentace, řízení přístupů, šifrování, audit logy, secret vaulty, GDPR alignment." },
+    { q:"Co když PoC nebudeme chtít rozšiřovat?", a:"PoC je nízkonákladové ověření. Pokud nepokračujete, výstupy předáme pro vaše využití." }
+  ];
+  return (<main className="container mx-auto max-w-6xl px-4 py-16">
+    <section className="text-center">
+      <h1 className="text-4xl sm:text-5xl font-bold">Jsme Grove Tech AI – váš partner pro skutečné AI projekty.</h1>
+      <p className="mt-4 text-lg text-neutral-700">Kde jiní končí, my teprve začínáme. Od strategie přes prototyp až po škálování – děláme z AI nástroj, který přináší výsledky.</p>
+      <TrustBar lang="cs" />
+      <KPIRow lang="cs" />
+    </section>
+
+    <section className="mt-14 grid md:grid-cols-2 gap-10 items-start">
+      <div>
+        <h2 className="text-2xl font-semibold">Náš příběh</h2>
+        <p className="mt-3 text-neutral-700">AI nemá být buzzword, ale reálný nástroj. Viděli jsme příliš mnoho prototypů, které nikdy nešly do praxe. Založili jsme Grove Tech AI, aby firmy měly partnera, který dokáže nápad přetavit do funkčního řešení.</p>
+        <p className="mt-3 text-neutral-700">Od start‑upů po enterprise – pomáháme proměnit AI v konkurenční výhodu. Rychle, bezpečně a pragmaticky.</p>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        {[
+          { icon:"brain", title:"Vendor‑agnostic AI", txt:"Volíme model, který je pro váš projekt nejlepší." },
+          { icon:"shield-lock", title:"Bezpečnost & data", txt:"Data zůstávají pod vaší kontrolou." },
+          { icon:"rocket", title:"Rychlost & pragmatismus", txt:"PoC → produkce v řádu týdnů." },
+          { icon:"handshake", title:"Partnerství", txt:"Jsme váš AI tým na straně byznysu." }
+        ].map((c,i)=>(
+          <div key={i} className="rounded-xl border p-4 bg-white">
+            <Icon name={c.icon} size={22}/><div className="mt-2 font-medium">{c.title}</div><div className="text-sm text-neutral-700">{c.txt}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <Timeline lang="cs" />
+
+    <FAQ lang="cs" />
+    <CTASection lang="cs" />
+    <FAQJsonLd lang="cs" items={faqItems} />
+    <JsonLd />
+  </main>);
+}
+EOF
+
+cat > app/en/about/page.tsx <<'EOF'
+import { CTASection } from "@/components/CTASection";
+import { Timeline } from "@/components/Timeline";
+import { Icon } from "@/components/Icon";
+import { StructuredData } from "@/components/StructuredData";
+import { TrustBar } from "@/components/TrustBar";
+import { KPIRow } from "@/components/KPIRow";
+import { FAQ } from "@/components/FAQ";
+import { FAQJsonLd } from "@/components/FAQJsonLd";
+import { alternatesFor, ogBase, twitterBase, SITE } from "@/lib/seo";
+
+export function generateMetadata() {
+  const title = "About Us | Grove Tech AI";
+  const description = "We accelerate AI projects: from strategy to prototype to scale.";
+  return { title, description, alternates: alternatesFor("/about"), openGraph: ogBase("en", title, description), twitter: twitterBase(title, description) };
+}
+function JsonLd() {
+  const data = { "@context":"https://schema.org", "@type":"AboutPage", name:"About Us", inLanguage:"en", url:`${SITE}/en/about`, description:"Grove Tech AI – AI project accelerator. From strategy to scale." };
+  return <StructuredData data={data} />;
+}
+export default function Page(){
+  const faqItems = [
+    { q:"How do you select an LLM? OpenAI, Mistral, Gemini or LLaMA?", a:"We’re vendor‑agnostic. We choose by goals, task quality, cost, latency and data/compliance." },
+    { q:"How fast to production?", a:"Typically 4–8 weeks: strategy (1–2), prototype (1–2), build & integration (2–4), then scale." },
+    { q:"Who owns data and where does inference run?", a:"Client controls data. Inference: cloud, on‑prem or hybrid. We respect access controls and audit." },
+    { q:"Security & compliance?", a:"Segmentation, access control, encryption, audit logs, secrets vault, GDPR alignment." },
+    { q:"What if we stop after the PoC?", a:"Low‑risk validation; we hand over all outputs and insights." }
+  ];
+  return (<main className="container mx-auto max-w-6xl px-4 py-16">
+    <section className="text-center">
+      <h1 className="text-4xl sm:text-5xl font-bold">We are Grove Tech AI – your partner for real AI projects.</h1>
+      <p className="mt-4 text-lg text-neutral-700">Where others stop, we’re just getting started. From strategy to prototype to scale — we turn AI into results.</p>
+      <TrustBar lang="en" />
+      <KPIRow lang="en" />
+    </section>
+
+    <section className="mt-14 grid md:grid-cols-2 gap-10 items-start">
+      <div>
+        <h2 className="text-2xl font-semibold">Our story</h2>
+        <p className="mt-3 text-neutral-700">AI shouldn’t be a buzzword. We saw too many prototypes that never shipped. Grove Tech AI exists to turn ideas into working solutions.</p>
+        <p className="mt-3 text-neutral-700">From startups to enterprises — we make AI your competitive edge. Fast, secure and pragmatic.</p>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        {[
+          { icon:"brain", title:"Vendor‑agnostic AI", txt:"We pick the best model for your project." },
+          { icon:"shield-lock", title:"Security & data", txt:"Your data stays under your control." },
+          { icon:"rocket", title:"Speed & pragmatism", txt:"PoC → production in weeks." },
+          { icon:"handshake", title:"Partnership", txt:"We act as your AI team." }
+        ].map((c,i)=>(
+          <div key={i} className="rounded-xl border p-4 bg-white">
+            <Icon name={c.icon} size={22}/><div className="mt-2 font-medium">{c.title}</div><div className="text-sm text-neutral-700">{c.txt}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <Timeline lang="en" />
+
+    <FAQ lang="en" />
+    <CTASection lang="en" />
+    <FAQJsonLd lang="en" items={faqItems} />
+    <JsonLd />
+  </main>);
+}
+EOF
+
+# 8) Use Case shared comps
+cat > components/UseCaseFAQ.tsx <<'EOF'
+export type QA = { q:string; a:string };
+export function UseCaseFAQ({ lang="cs", items }:{lang?:"cs"|"en"; items: QA[]}) {
+  return (<section className="mt-16">
+    <h2 className="text-2xl font-semibold">{lang==="cs"?"Často kladené otázky":"Frequently Asked Questions"}</h2>
+    <div className="mt-6 divide-y border rounded-2xl bg-white">
+      {items.map((it,i)=>(
+        <details key={i} className="group p-4 open:bg-white/60">
+          <summary className="cursor-pointer list-none font-medium leading-6">{it.q}<span className="float-right transition group-open:rotate-45">+</span></summary>
+          <p className="mt-2 text-sm text-neutral-700">{it.a}</p>
+        </details>
+      ))}
+    </div>
+  </section>);
+}
+EOF
+
+cat > components/UseCaseJsonLd.tsx <<'EOF'
+import { StructuredData } from "@/components/StructuredData";
+export function UseCaseJsonLd({ lang="cs", url, name, serviceType, faq }:{
+  lang?:"cs"|"en"; url:string; name:string; serviceType:string; faq:{q:string;a:string}[];
+}) {
+  const breadcrumb = { "@context":"https://schema.org", "@type":"BreadcrumbList",
+    itemListElement: [
+      { "@type":"ListItem", position:1, name:"Home", item:url.replace(/\/use-cases\/.*/,"") },
+      { "@type":"ListItem", position:2, name:"Use Cases", item:url.replace(/\/[^/]+$/,"") },
+      { "@type":"ListItem", position:3, name, item:url }
+    ] };
+  const service = { "@context":"https://schema.org", "@type":"Service", name, serviceType, areaServed:"EU",
+    provider:{ "@type":"Organization", name:"Grove Tech AI s.r.o." }, url,
+    offers:{ "@type":"Offer", availability:"https://schema.org/InStock", price:"0", priceCurrency:"EUR" } };
+  const faqJson = { "@context":"https://schema.org", "@type":"FAQPage", inLanguage: lang,
+    mainEntity: faq.map(x=>({ "@type":"Question", name:x.q, acceptedAnswer:{ "@type":"Answer", text:x.a } })) };
+  return (<>
+    <StructuredData data={breadcrumb} />
+    <StructuredData data={service} />
+    <StructuredData data={faqJson} />
+  </>);
+}
+EOF
+
+# 9) Use Cases CZ (obsah + FAQ)
+make_uc() {
+  local path="$1"; local title="$2"; local desc="$3"; local name="$4"; local faq1="$5"; local faq2="$6"; local faq3="$7";
+  cat > "app/cs/use-cases/${path}/page.tsx" <<EOF
+import { UseCaseFAQ } from "@/components/UseCaseFAQ";
+import { UseCaseJsonLd } from "@/components/UseCaseJsonLd";
+import { alternatesFor, ogBase, twitterBase, SITE } from "@/lib/seo";
+
+export function generateMetadata() {
+  const title = "${title} | Grove Tech AI";
+  const description = "${desc}";
+  return { title, description, alternates: alternatesFor("/use-cases/${path}"), openGraph: ogBase("cs", title, description), twitter: twitterBase(title, description) };
+}
+
+export default function Page() {
+  const name = "${name}";
+  const url = \`\${SITE}/cs/use-cases/${path}\`;
+  const faq = [
+    ${faq1},
+    ${faq2},
+    ${faq3}
+  ];
+  return (<main className="container mx-auto max-w-6xl px-4 py-12">
+    <h1 className="text-3xl font-bold">{name}</h1>
+    <p className="mt-3 text-neutral-700">${desc}</p>
+    <UseCaseFAQ lang="cs" items={faq} />
+    <UseCaseJsonLd lang="cs" url={url} name={name} serviceType="${name}" faq={faq} />
+  </main>);
+}
+EOF
+}
+make_uc "hotel-concierge" "Hotelový AI concierge" "24/7 multijazyčný digitální concierge: odpovídá hostům, doporučuje služby a integruje se do PMS/CRM." "Hotelový AI concierge" \
+'{ q:"Podporuje více jazyků?", a:"Ano. Concierge komunikuje česky, anglicky a dalšími jazyky." }' \
+'{ q:"Napojení na PMS/CRM?", a:"Integrujeme na váš systém (rezervace, profil hosta, upsell služeb)." }' \
+'{ q:"Jaké jsou nároky na provoz?", a:"Běží v cloudu/edge s monitoringem a SLA; možnost on‑prem/hybrid." }'
+
+make_uc "ecommerce-concierge" "E‑commerce AI concierge" "Chat nákupní asistent, personalizace, návraty a status objednávek – napojení na PIM/ERP/CRM." "E‑commerce AI concierge" \
+'{ q:"Umí pracovat s katalogem a dostupností?", a:"Ano, napojíme na PIM/ERP a sklad." }' \
+'{ q:"Dokáže personalizovat doporučení?", a:"Ano, podle profilu, historie a kontextu relace." }' \
+'{ q:"Vrácení zboží / status objednávky?", a:"Integrujeme API e‑shopu, CRM a logistiku." }'
+
+make_uc "knowledge-assistant" "Interní znalostní asistent" "RAG, řízené přístupy, SSO a audit. Rychlé vyhledávání znalostí přes dokumenty a systémy." "Interní znalostní asistent" \
+'{ q:"Bezpečnost přístupu?", a:"RBAC/SSO, audit logy, řízený přístup k dokumentům." }' \
+'{ q:"Jak se aktualizují znalosti?", a:"Ingestion pipeline, RAG + verze dokumentů." }' \
+'{ q:"On‑prem varianta?", a:"Možná – on‑prem LLM/embedding + lokální vektorový index." }'
+
+make_uc "ai-sommelier" "AI someliér" "Doporučení vín podle profilu, jídel, dostupnosti a ceny. Napojení na sklad a ceník." "AI someliér" \
+'{ q:"Jaké údaje someliér potřebuje?", a:"Základní profil zákazníka + parametry vína (odrůda, terroir, ročník)." }' \
+'{ q:"Párování s jídlem?", a:"Ano, doporučí párování podle jídelního lístku/ingrediencí." }' \
+'{ q:"Dostupnost a ceny?", a:"Napojíme na sklad a ceník, ukáže i alternativy." }'
+
+# 10) Contact (CZ/EN) + LeadForm usage
+cat > app/cs/contact/page.tsx <<'EOF'
+import { LeadForm } from "@/components/LeadForm";
+import { alternatesFor, ogBase, twitterBase } from "@/lib/seo";
+export function generateMetadata(){ const title="Kontakt | Grove Tech AI"; const description="Spojte se s námi – info@grovetechai.com, +420 277 279 913"; return { title, description, alternates: alternatesFor("/contact"), openGraph: ogBase("cs",title,description), twitter: twitterBase(title,description) }; }
+export default function Page(){
+  return (<main className="container mx-auto max-w-6xl px-4 py-16">
+    <h1 className="text-3xl font-semibold">Kontakt</h1>
+    <div className="mt-6 grid md:grid-cols-2 gap-10">
+      <div className="text-sm">
+        <p><b>GROVE TECH AI s.r.o.</b></p>
+        <p className="mt-2"><b>Tel:</b> +420 277 279 913<br/><b>E‑mail:</b> info@grovetechai.com<br/><b>Podpora:</b> support@grovetechai.com</p>
+        <p className="mt-2"><b>IČO:</b> 217 07 146<br/><b>DIČ:</b> CZ 217 07 146</p>
+        <p className="mt-2">Varšavská 715/36, Praha 2 – Vinohrady, 120 00</p>
+        <p className="mt-3"><a className="underline" href="https://www.linkedin.com/company/grove-tech-ai" target="_blank">LinkedIn</a></p>
+      </div>
+      <LeadForm lang="cs" />
+    </div>
+  </main>);
+}
+EOF
+
+cat > app/en/contact/page.tsx <<'EOF'
+import { LeadForm } from "@/components/LeadForm";
+import { alternatesFor, ogBase, twitterBase } from "@/lib/seo";
+export function generateMetadata(){ const title="Contact | Grove Tech AI"; const description="Get in touch – info@grovetechai.com, +420 277 279 913"; return { title, description, alternates: alternatesFor("/contact"), openGraph: ogBase("en",title,description), twitter: twitterBase(title,description) }; }
+export default function Page(){
+  return (<main className="container mx-auto max-w-6xl px-4 py-16">
+    <h1 className="text-3xl font-semibold">Contact</h1>
+    <div className="mt-6 grid md:grid-cols-2 gap-10">
+      <div className="text-sm">
+        <p><b>GROVE TECH AI s.r.o.</b></p>
+        <p className="mt-2"><b>Phone:</b> +420 277 279 913<br/><b>Email:</b> info@grovetechai.com<br/><b>Support:</b> support@grovetechai.com</p>
+        <p className="mt-2"><b>Company ID:</b> 217 07 146<br/><b>VAT:</b> CZ 217 07 146</p>
+        <p className="mt-2">Varšavská 715/36, Praha 2 – Vinohrady, 120 00</p>
+        <p className="mt-3"><a className="underline" href="https://www.linkedin.com/company/grove-tech-ai" target="_blank">LinkedIn</a></p>
+      </div>
+      <LeadForm lang="en" />
+    </div>
+  </main>);
+}
+EOF
+
+# 11) Privacy short (CZ/EN placeholder)
+cat > app/cs/privacy/page.tsx <<'EOF'
+import { StructuredData } from "@/components/StructuredData";
+import { alternatesFor, ogBase, twitterBase, SITE } from "@/lib/seo";
+export function generateMetadata(){ const title="Zásady zpracování osobních údajů | Grove Tech AI"; const description="Jak zpracováváme osobní údaje při poskytování AI služeb."; return { title, description, alternates: alternatesFor("/privacy"), openGraph: ogBase("cs",title,description), twitter: twitterBase(title,description) }; }
+export default function Page(){ return (<main className="container mx-auto max-w-3xl px-4 py-16 prose">
+  <h1>Zásady zpracování osobních údajů</h1>
+  <p>Kontakt pro výkon práv: <a href="mailto:info@grovetechai.com">info@grovetechai.com</a>. (Plné znění vlož později sem.)</p>
+  <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify({ "@context":"https://schema.org","@type":"WebPage","name":"Zásady zpracování osobních údajů","inLanguage":"cs","url":`${SITE}/cs/privacy` })}} />
+</main>); }
+EOF
+
+cat > app/en/privacy/page.tsx <<'EOF'
+import { StructuredData } from "@/components/StructuredData";
+import { alternatesFor, ogBase, twitterBase, SITE } from "@/lib/seo";
+export function generateMetadata(){ const title="Privacy Policy | Grove Tech AI"; const description="How we process personal data when providing AI services."; return { title, description, alternates: alternatesFor("/privacy"), openGraph: ogBase("en",title,description), twitter: twitterBase(title,description) }; }
+export default function Page(){ return (<main className="container mx-auto max-w-3xl px-4 py-16 prose">
+  <h1>Privacy Policy</h1>
+  <p>Data subject rights contact: <a href="mailto:info@grovetechai.com">info@grovetechai.com</a>. (Full text to be added here.)</p>
+  <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify({ "@context":"https://schema.org","@type":"WebPage","name":"Privacy Policy","inLanguage":"en","url":`${SITE}/en/privacy` })}} />
+</main>); }
+EOF
+
+# 12) Thanks + 404
+cat > app/cs/thanks/page.tsx <<'EOF'
+export default function Page(){ return (<main className="container mx-auto max-w-3xl px-4 py-20 text-center">
+  <h1 className="text-3xl font-bold">Děkujeme za zprávu!</h1><p className="mt-2 text-neutral-600">Brzy se vám ozveme.</p><a href="/cs" className="mt-6 inline-block underline">Zpět domů</a>
+</main>); }
+EOF
+
+cat > app/en/thanks/page.tsx <<'EOF'
+export default function Page(){ return (<main className="container mx-auto max-w-3xl px-4 py-20 text-center">
+  <h1 className="text-3xl font-bold">Thanks for your message!</h1><p className="mt-2 text-neutral-600">We will get back to you soon.</p><a href="/en" className="mt-6 inline-block underline">Back home</a>
+</main>); }
+EOF
+
+cat > app/not-found.tsx <<'EOF'
+export default function NotFound(){ return (<main className="container mx-auto max-w-3xl px-4 py-20 text-center">
+  <h1 className="text-3xl font-bold">404 – Stránka nenalezena / Page not found</h1>
+  <a href="/cs" className="mt-6 inline-block underline">CZ domů</a> · <a href="/en" className="mt-6 inline-block underline">EN home</a>
+</main>); }
+EOF
+
+# 13) Public assets: logo placeholder, robots, sitemap
+cat > public/images/logo.svg <<'EOF'
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="40" viewBox="0 0 160 40"><rect width="160" height="40" rx="8" fill="#FF2D2D"/><text x="80" y="26" font-family="Arial, Helvetica, sans-serif" font-size="14" text-anchor="middle" fill="#fff">GROVE TECH AI</text></svg>
+EOF
+
+cat > public/robots.txt <<'EOF'
+User-agent: *
+Allow: /
+Sitemap: /sitemap.xml
+EOF
+
+cat > public/sitemap.xml <<'EOF'
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://grovetechai.com/cs</loc></url>
+  <url><loc>https://grovetechai.com/en</loc></url>
+  <url><loc>https://grovetechai.com/cs/about</loc></url>
+  <url><loc>https://grovetechai.com/en/about</loc></url>
+  <url><loc>https://grovetechai.com/cs/contact</loc></url>
+  <url><loc>https://grovetechai.com/en/contact</loc></url>
+  <url><loc>https://grovetechai.com/cs/privacy</loc></url>
+  <url><loc>https://grovetechai.com/en/privacy</loc></url>
+  <url><loc>https://grovetechai.com/cs/use-cases/hotel-concierge</loc></url>
+  <url><loc>https://grovetechai.com/cs/use-cases/ecommerce-concierge</loc></url>
+  <url><loc>https://grovetechai.com/cs/use-cases/knowledge-assistant</loc></url>
+  <url><loc>https://grovetechai.com/cs/use-cases/ai-sommelier</loc></url>
+</urlset>
+EOF
+
+# 14) Cloudflare Pages Function – /api/contact (MailChannels + Turnstile + Slack)
+cat > functions/api/contact.ts <<'EOF'
+export const onRequestPost: PagesFunction<{
+  TURNSTILE_SECRET: string;
+  SLACK_WEBHOOK_URL?: string;
+  MAIL_FROM: string;
+  MAIL_TO: string;
+  MAIL_CC?: string;
+}> = async (ctx) => {
+  try {
+    const env = ctx.env as any;
+    const body = await ctx.request.json().catch(()=>({}));
+    const { name="", email="", company="", message="", cf_turnstile_token="" } = body;
+
+    // Turnstile verify
+    const verify = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+      method:"POST", headers:{ "content-type":"application/x-www-form-urlencoded" },
+      body:`secret=${encodeURIComponent(env.TURNSTILE_SECRET||"TEST")}&response=${encodeURIComponent(cf_turnstile_token)}`
+    }).then(r=>r.json() as Promise<{success:boolean}>);
+    if(!verify.success) return new Response(JSON.stringify({ ok:false, error:"Captcha failed" }), { status:400 });
+
+    const esc = (s:string="")=>s.replace(/[&<>"']/g,c=>({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;" }[c]!));
+    const html = `<h2>New inquiry – Grove Tech AI</h2><p><b>Name:</b> ${esc(name)}<br/><b>Email:</b> ${esc(email)}<br/><b>Company:</b> ${esc(company||"-")}<br/><b>Message:</b><br/>${esc(message).replace(/\n/g,"<br/>")}</p>`;
+
+    // MailChannels
+    const mcPayload = {
+      personalizations: [{
+        to:[{email: env.MAIL_TO, name:"Grove Tech AI – Info"}],
+        cc: env.MAIL_CC ? [{email: env.MAIL_CC, name:"Grove Tech AI – Sales"}] : undefined,
+        reply_to: [{ email, name }]
+      }],
+      from: { email: env.MAIL_FROM, name: "Grove Tech AI Website" },
+      subject: `Website inquiry from ${name||"unknown"}`,
+      content: [
+        { type:"text/plain", value:`Name: ${name}\nEmail: ${email}\nCompany: ${company||"-"}\n\n${message}` },
+        { type:"text/html",  value: html }
+      ]
+    };
+    const mcRes = await fetch("https://api.mailchannels.net/tx/v1/send", { method:"POST", headers:{ "content-type":"application/json" }, body: JSON.stringify(mcPayload) });
+    if(!mcRes.ok){ const t = await mcRes.text(); throw new Error(`MailChannels: ${mcRes.status} ${t}`); }
+
+    if(env.SLACK_WEBHOOK_URL){
+      await fetch(env.SLACK_WEBHOOK_URL, { method:"POST", headers:{ "content-type":"application/json" },
+        body: JSON.stringify({ text:"🔔 New website inquiry", blocks:[
+          { type:"header", text:{ type:"plain_text", text:"New inquiry – Grove Tech AI" } },
+          { type:"section", fields:[
+            { type:"mrkdwn", text:`*Name:*\n${name}` },
+            { type:"mrkdwn", text:`*Email:*\n${email}` },
+            { type:"mrkdwn", text:`*Company:*\n${company||"-"}` },
+            { type:"mrkdwn", text:`*Message:*\n${message}` }
+          ]}
+        ]})
+      });
+    }
+
+    return Response.json({ ok:true });
+  } catch(e:any) {
+    return new Response(JSON.stringify({ ok:false, error:e?.message||"Server error" }), { status:500 });
+  }
+};
+EOF
+
+echo "✅ Scaffold ready. Next steps:
+1) npm i
+2) npm run dev
+3) Replit Secrets: NEXT_PUBLIC_SITE_URL, NEXT_PUBLIC_TURNSTILE_SITE_KEY, TURNSTILE_SECRET, MAIL_FROM, MAIL_TO, MAIL_CC, (opt) SLACK_WEBHOOK_URL, NEXT_PUBLIC_PLAUSIBLE_DOMAIN
+4) Test /cs/contact (lokálně Turnstile TEST) — e‑mail se ověří až na doméně s MailChannels TXT."
