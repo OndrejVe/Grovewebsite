@@ -1,19 +1,13 @@
-import { ArrowRight, Brain, Code, Database, Zap, Cpu, Bot, Send } from 'lucide-react';
+import { ArrowRight, Brain, Code, Database, Zap, Cpu, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useToast } from '@/hooks/use-toast';
-import { useMutation } from '@tanstack/react-query';
-import { apiRequest } from '@/lib/queryClient';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 
 export function HeroSection() {
-  const { t, language } = useLanguage();
-  const { toast } = useToast();
+  const { t } = useLanguage();
   const [typewriterText, setTypewriterText] = useState('');
   const [showCursor, setShowCursor] = useState(true);
-  const [email, setEmail] = useState('');
 
   const fullText = t('heroTitleAccent');
 
@@ -38,37 +32,6 @@ export function HeroSection() {
     };
   }, [fullText]);
 
-  const quickContactMutation = useMutation({
-    mutationFn: async (email: string) => {
-      return await apiRequest('POST', '/api/contact', {
-        name: 'Quick Contact',
-        email,
-        message: 'Zájem o AI řešení - rychlý kontakt z hlavní stránky',
-        language
-      });
-    },
-    onSuccess: () => {
-      toast({
-        title: "Děkujeme!",
-        description: "Ozveme se vám do 24 hodin.",
-      });
-      setEmail('');
-    },
-    onError: () => {
-      toast({
-        title: "Chyba",
-        description: "Zkuste to prosím znovu.",
-        variant: "destructive",
-      });
-    }
-  });
-
-  const handleQuickContact = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email) {
-      quickContactMutation.mutate(email);
-    }
-  };
 
   const techElements = [
     { icon: Brain, label: "Neural Networks", position: "top-20 left-10", delay: 0 },
@@ -119,57 +82,30 @@ export function HeroSection() {
             </div>
           </div>
           
-          {/* Quick Contact Form */}
           <motion.div 
-            className="flex flex-col items-center gap-4 mb-12 max-w-md mx-auto"
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
           >
-            <form onSubmit={handleQuickContact} className="w-full">
-              <div className="flex gap-2">
-                <Input
-                  type="email"
-                  placeholder="vas-email@firma.cz"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="flex-1 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-2 border-gray-200 dark:border-gray-600 focus:border-brand-blue"
-                  required
-                />
-                <Button 
-                  type="submit"
-                  size="lg"
-                  disabled={quickContactMutation.isPending}
-                  className="bg-gradient-to-r from-brand-blue to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 transform hover:scale-105 hover:shadow-xl transition-all duration-200"
-                >
-                  {quickContactMutation.isPending ? '...' : <Send className="w-5 h-5" />}
-                </Button>
-              </div>
-            </form>
-            <p className="text-sm text-gray-600 dark:text-gray-400 text-center">
-              Popište váš AI projekt - ozveme se do 24h
-            </p>
-            
-            <div className="flex gap-4 mt-4">
-              <a href="#about">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="border-2 border-brand-blue/30 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm hover:border-brand-blue hover:text-brand-blue transition-all duration-200"
-                >
-                  {t('learnMore')}
-                </Button>
-              </a>
-              <a href="#contact">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="border-2 border-brand-green/30 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm hover:border-brand-green hover:text-brand-green transition-all duration-200"
-                >
-                  {t('contactUs')}
-                </Button>
-              </a>
-            </div>
+            <a href="#about">
+              <Button 
+                size="lg" 
+                className="bg-gradient-to-r from-brand-blue to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-4 transform hover:scale-105 hover:shadow-xl transition-all duration-200"
+              >
+                {t('learnMore')}
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+            </a>
+            <a href="#contact">
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="px-8 py-4 border-2 border-brand-blue/30 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm hover:border-brand-blue hover:text-brand-blue hover:bg-white/80 transition-all duration-200"
+              >
+                {t('contactUs')}
+              </Button>
+            </a>
           </motion.div>
 
           {/* Code snippet animation */}
