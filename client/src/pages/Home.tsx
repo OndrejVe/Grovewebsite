@@ -3,6 +3,7 @@ import { Footer } from '@/components/layout/Footer';
 import { HeroSection } from '@/components/sections/HeroSection';
 import { KPISection } from '@/components/sections/KPISection';
 import { UseCasesPreview } from '@/components/sections/UseCasesPreview';
+import { DIDPartnerSection } from '@/components/sections/DIDPartnerSection';
 import { AboutSection } from '@/components/sections/AboutSection';
 import { ContactSection } from '@/components/sections/ContactSection';
 
@@ -16,6 +17,7 @@ export default function Home() {
         </div>
         <KPISection />
         <UseCasesPreview />
+        <DIDPartnerSection />
         <div id="about">
           <AboutSection />
         </div>

@@ -26,7 +26,14 @@ export function Navigation() {
           {/* Logo */}
           <Link href="/">
             <div className="flex items-center gap-3 cursor-pointer">
-              <img src="/attached_assets/04_black_flat_1755710813275.png" alt="Grove Tech AI" className="h-8 w-auto" />
+              <img 
+                src="/attached_assets/04_black_flat_1755711463165.png" 
+                alt="Grove Tech AI" 
+                className="h-8 w-auto"
+                onError={(e) => {
+                  e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/%3E%3C/svg%3E";
+                }}
+              />
               <span className="font-semibold text-lg">Grove Tech AI</span>
             </div>
           </Link>

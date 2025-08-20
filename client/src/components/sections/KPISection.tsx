@@ -82,7 +82,7 @@ export function KPISection() {
           ))}
         </div>
 
-        {/* Tech Stack Showcase */}
+        {/* Realization Pipeline */}
         <motion.div 
           className="bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-800 dark:to-blue-900/20 rounded-2xl p-8"
           initial={{ opacity: 0, y: 20 }}
@@ -92,42 +92,57 @@ export function KPISection() {
         >
           <div className="text-center mb-8">
             <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-              Our Tech Stack
+              Realizační Pipeline
             </h3>
             <p className="text-gray-600 dark:text-gray-400">
-              Cutting-edge technologies powering our AI solutions
+              Od konceptu k produkčnímu AI řešení v 5 krocích
             </p>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-            {technologies.map((tech, index) => (
-              <motion.div 
-                key={tech.name}
-                className="relative"
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <div className="bg-white dark:bg-gray-700 rounded-lg p-4 text-center shadow-sm">
-                  <div className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
-                    {tech.name}
+          <div className="relative">
+            {/* Pipeline Line */}
+            <div className="absolute top-6 left-0 right-0 h-0.5 bg-gradient-to-r from-brand-blue to-brand-green hidden md:block"></div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+              {[
+                { phase: "1", title: "Discovery", desc: "Analýza požadavků a definice use case", color: "bg-blue-500", duration: "1-2 týdny" },
+                { phase: "2", title: "MVP", desc: "Rychlý prototyp pro validaci konceptu", color: "bg-green-500", duration: "2-3 týdny" },
+                { phase: "3", title: "Integration", desc: "Propojení s existujícími systémy", color: "bg-purple-500", duration: "3-4 týdny" },
+                { phase: "4", title: "Testing", desc: "Komplexní testování a optimalizace", color: "bg-orange-500", duration: "1-2 týdny" },
+                { phase: "5", title: "Production", desc: "Nasazení a kontinuální monitoring", color: "bg-red-500", duration: "1 týden" }
+              ].map((step, index) => (
+                <motion.div 
+                  key={step.phase}
+                  className="relative text-center"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: index * 0.2 }}
+                  viewport={{ once: true }}
+                >
+                  <div className={`w-12 h-12 ${step.color} rounded-full flex items-center justify-center text-white font-bold text-lg mx-auto mb-4 relative z-10 shadow-lg`}>
+                    {step.phase}
                   </div>
-                  <div className="relative h-2 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
-                    <motion.div
-                      className="absolute left-0 top-0 h-full bg-gradient-to-r from-brand-blue to-brand-green rounded-full"
-                      initial={{ width: 0 }}
-                      whileInView={{ width: `${tech.usage}%` }}
-                      transition={{ duration: 1, delay: 0.5 + index * 0.1 }}
-                      viewport={{ once: true }}
-                    />
+                  <div className="bg-white dark:bg-gray-700 rounded-lg p-4 shadow-sm">
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                      {step.title}
+                    </h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                      {step.desc}
+                    </p>
+                    <div className="text-xs text-brand-blue font-medium">
+                      {step.duration}
+                    </div>
                   </div>
-                  <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                    {tech.usage}% proficiency
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              ))}
+            </div>
+          </div>
+          
+          <div className="text-center mt-8">
+            <div className="inline-flex items-center gap-2 bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400 px-4 py-2 rounded-full text-sm font-medium">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              Celková doba: 8-12 týdnů od startu k produkci
+            </div>
           </div>
         </motion.div>
       </div>

@@ -12,7 +12,14 @@ export function Footer() {
           <div>
             <Link href="/">
               <div className="flex items-center gap-3 mb-4 cursor-pointer">
-                <img src="/attached_assets/04_black_flat_1755710813275.png" alt="Grove Tech AI" className="h-8 w-auto" />
+                <img 
+                  src="/attached_assets/04_black_flat_1755711463165.png" 
+                  alt="Grove Tech AI" 
+                  className="h-8 w-auto"
+                  onError={(e) => {
+                    e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/%3E%3C/svg%3E";
+                  }}
+                />
                 <span className="font-semibold text-lg text-gray-900 dark:text-gray-100">Grove Tech AI</span>
               </div>
             </Link>
@@ -41,24 +48,24 @@ export function Footer() {
             <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">{t('quickLinks')}</h4>
             <div className="space-y-2">
               <Link href="/about">
-                <a className="block text-gray-600 dark:text-gray-400 hover:text-brand-blue transition-colors">
+                <span className="block text-gray-600 dark:text-gray-400 hover:text-brand-blue transition-colors cursor-pointer">
                   {t('about')}
-                </a>
+                </span>
               </Link>
               <Link href="/usecases">
-                <a className="block text-gray-600 dark:text-gray-400 hover:text-brand-blue transition-colors">
+                <span className="block text-gray-600 dark:text-gray-400 hover:text-brand-blue transition-colors cursor-pointer">
                   {t('usecases')}
-                </a>
+                </span>
               </Link>
               <Link href="/contact">
-                <a className="block text-gray-600 dark:text-gray-400 hover:text-brand-blue transition-colors">
+                <span className="block text-gray-600 dark:text-gray-400 hover:text-brand-blue transition-colors cursor-pointer">
                   {t('contact')}
-                </a>
+                </span>
               </Link>
               <Link href="/gdpr">
-                <a className="block text-gray-600 dark:text-gray-400 hover:text-brand-blue transition-colors">
+                <span className="block text-gray-600 dark:text-gray-400 hover:text-brand-blue transition-colors cursor-pointer">
                   GDPR
-                </a>
+                </span>
               </Link>
             </div>
           </div>
@@ -80,9 +87,9 @@ export function Footer() {
             <p>&copy; 2024 Grove Tech AI s.r.o. {t('allRightsReserved')}</p>
             <div className="flex gap-4 mt-4 md:mt-0">
               <Link href="/gdpr">
-                <a className="hover:text-brand-blue transition-colors">
+                <span className="hover:text-brand-blue transition-colors cursor-pointer">
                   {t('privacyPolicy')}
-                </a>
+                </span>
               </Link>
             </div>
           </div>

@@ -1,10 +1,74 @@
-import { ArrowRight, Brain, Code, Database, Zap, Cpu, Bot } from 'lucide-react';
+import { ArrowRight, Brain, Code, Database, Zap, Cpu, Bot, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useToast } from '@/hooks/use-toast';
+import { useMutation } from '@tanstack/react-query';
+import { apiRequest } from '@/lib/queryClient';
 import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
 
 export function HeroSection() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const { toast } = useToast();
+  const [typewriterText, setTypewriterText] = useState('');
+  const [showCursor, setShowCursor] = useState(true);
+  const [email, setEmail] = useState('');
+
+  const fullText = t('heroTitleAccent');
+
+  useEffect(() => {
+    let currentIndex = 0;
+    const typeInterval = setInterval(() => {
+      if (currentIndex < fullText.length) {
+        setTypewriterText(fullText.slice(0, currentIndex + 1));
+        currentIndex++;
+      } else {
+        clearInterval(typeInterval);
+      }
+    }, 100);
+
+    const cursorInterval = setInterval(() => {
+      setShowCursor(prev => !prev);
+    }, 530);
+
+    return () => {
+      clearInterval(typeInterval);
+      clearInterval(cursorInterval);
+    };
+  }, [fullText]);
+
+  const quickContactMutation = useMutation({
+    mutationFn: async (email: string) => {
+      return await apiRequest('POST', '/api/contact', {
+        name: 'Quick Contact',
+        email,
+        message: 'Zájem o AI řešení - rychlý kontakt z hlavní stránky',
+        language
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Děkujeme!",
+        description: "Ozveme se vám do 24 hodin.",
+      });
+      setEmail('');
+    },
+    onError: () => {
+      toast({
+        title: "Chyba",
+        description: "Zkuste to prosím znovu.",
+        variant: "destructive",
+      });
+    }
+  });
+
+  const handleQuickContact = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (email) {
+      quickContactMutation.mutate(email);
+    }
+  };
 
   const techElements = [
     { icon: Brain, label: "Neural Networks", position: "top-20 left-10", delay: 0 },
@@ -37,7 +101,8 @@ export function HeroSection() {
           <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight mb-6">
             <span className="block text-gray-900 dark:text-gray-100">{t('heroTitle')}</span>
             <span className="block bg-gradient-to-r from-brand-blue via-purple-500 to-brand-green bg-clip-text text-transparent">
-              {t('heroTitleAccent')}
+              {typewriterText}
+              {showCursor && <span className="animate-pulse">|</span>}
             </span>
           </h1>
           
@@ -46,37 +111,65 @@ export function HeroSection() {
               {t('heroSubtitle')}
             </p>
             <div className="flex flex-wrap justify-center gap-3 text-sm">
-              <span className="bg-brand-blue/10 text-brand-blue px-3 py-1 rounded-full">OpenAI GPT</span>
-              <span className="bg-brand-green/10 text-brand-green px-3 py-1 rounded-full">Claude 3.5</span>
-              <span className="bg-purple-100 text-purple-600 px-3 py-1 rounded-full">Llama 3</span>
-              <span className="bg-orange-100 text-orange-600 px-3 py-1 rounded-full">Gemini Pro</span>
+              <span className="bg-brand-blue/10 text-brand-blue px-3 py-1 rounded-full font-medium">RAG Systems</span>
+              <span className="bg-brand-green/10 text-brand-green px-3 py-1 rounded-full font-medium">Multilingual</span>
+              <span className="bg-purple-100 text-purple-600 px-3 py-1 rounded-full font-medium">On-prem/Cloud</span>
+              <span className="bg-orange-100 text-orange-600 px-3 py-1 rounded-full font-medium">Security & Audit</span>
+              <span className="bg-pink-100 text-pink-600 px-3 py-1 rounded-full font-medium">Real-time Avatars</span>
             </div>
           </div>
           
+          {/* Quick Contact Form */}
           <motion.div 
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
+            className="flex flex-col items-center gap-4 mb-12 max-w-md mx-auto"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
           >
-            <a href="#about">
-              <Button 
-                size="lg" 
-                className="bg-gradient-to-r from-brand-blue to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-4 transform hover:scale-105 hover:shadow-xl transition-all duration-200"
-              >
-                {t('learnMore')}
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-            </a>
-            <a href="#contact">
-              <Button 
-                variant="outline" 
-                size="lg" 
-                className="px-8 py-4 border-2 border-brand-blue/30 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm hover:border-brand-blue hover:text-brand-blue hover:bg-white/80 transition-all duration-200"
-              >
-                {t('contactUs')}
-              </Button>
-            </a>
+            <form onSubmit={handleQuickContact} className="w-full">
+              <div className="flex gap-2">
+                <Input
+                  type="email"
+                  placeholder="vas-email@firma.cz"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="flex-1 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-2 border-gray-200 dark:border-gray-600 focus:border-brand-blue"
+                  required
+                />
+                <Button 
+                  type="submit"
+                  size="lg"
+                  disabled={quickContactMutation.isPending}
+                  className="bg-gradient-to-r from-brand-blue to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 transform hover:scale-105 hover:shadow-xl transition-all duration-200"
+                >
+                  {quickContactMutation.isPending ? '...' : <Send className="w-5 h-5" />}
+                </Button>
+              </div>
+            </form>
+            <p className="text-sm text-gray-600 dark:text-gray-400 text-center">
+              Popište váš AI projekt - ozveme se do 24h
+            </p>
+            
+            <div className="flex gap-4 mt-4">
+              <a href="#about">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="border-2 border-brand-blue/30 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm hover:border-brand-blue hover:text-brand-blue transition-all duration-200"
+                >
+                  {t('learnMore')}
+                </Button>
+              </a>
+              <a href="#contact">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="border-2 border-brand-green/30 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm hover:border-brand-green hover:text-brand-green transition-all duration-200"
+                >
+                  {t('contactUs')}
+                </Button>
+              </a>
+            </div>
           </motion.div>
 
           {/* Code snippet animation */}
