@@ -63,9 +63,6 @@ export function UseCasesPreview() {
               <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-pink-600 rounded-lg flex items-center justify-center flex-shrink-0">
                 <Stethoscope className="w-6 h-6 text-white" />
               </div>
-              <div className="bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-400 px-3 py-1 rounded-full text-sm font-medium">
-                Reálný projekt v produkci
-              </div>
             </div>
             <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">
               {t('aiDoctorTitle')}

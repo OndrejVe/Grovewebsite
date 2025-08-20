@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Video, Mic, MessageSquare, Zap, Shield, Clock } from 'lucide-react';
+import { Video, Mic, MessageSquare, Zap, Shield, Clock, Stethoscope, Link, Rocket } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -39,21 +39,24 @@ export function DIDPartnerSection() {
       description: language === 'cs' 
         ? 'Úspěšně jsme vyvinuli AI doktora pro hematologii s CME a IACH' 
         : 'Successfully developed AI doctor for hematology with CME and IACH',
-      icon: '🩺'
+      icon: Stethoscope,
+      color: 'text-red-600'
     },
     {
       title: language === 'cs' ? 'Pokročilé integrace' : 'Advanced Integrations',
       description: language === 'cs' 
         ? 'Propojujeme D-ID avatary s firemními systémy a databázemi' 
         : 'Connecting D-ID avatars with corporate systems and databases',
-      icon: '🔗'
+      icon: Link,
+      color: 'text-blue-600'
     },
     {
       title: language === 'cs' ? 'Kompletní řešení' : 'Complete Solutions',
       description: language === 'cs' 
         ? 'Od konceptu přes vývoj až po nasazení v produkci' 
         : 'From concept through development to production deployment',
-      icon: '🚀'
+      icon: Rocket,
+      color: 'text-purple-600'
     }
   ];
 
@@ -181,7 +184,7 @@ export function DIDPartnerSection() {
                 transition={{ duration: 0.4, delay: index * 0.1 }}
                 viewport={{ once: true }}
               >
-                <div className="text-3xl mb-3">{highlight.icon}</div>
+                <highlight.icon className={`w-8 h-8 ${highlight.color} mx-auto mb-3`} />
                 <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
                   {highlight.title}
                 </h4>

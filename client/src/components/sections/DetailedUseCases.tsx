@@ -135,11 +135,6 @@ export function DetailedUseCases() {
                     <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                       {useCase.title}
                     </h3>
-                    {useCase.isProduction && (
-                      <div className="bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400 px-3 py-1 rounded-full text-sm font-medium">
-                        Produkční
-                      </div>
-                    )}
                   </div>
                   <p className="text-gray-600 dark:text-gray-400 mb-6">
                     {useCase.description}
