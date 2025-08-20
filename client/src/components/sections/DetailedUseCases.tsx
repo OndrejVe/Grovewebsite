@@ -1,4 +1,4 @@
-import { Building2, Lightbulb, ShoppingBag, Wine, CheckCircle } from 'lucide-react';
+import { Building2, Lightbulb, ShoppingBag, Wine, Stethoscope, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { motion } from 'framer-motion';
@@ -7,6 +7,27 @@ export function DetailedUseCases() {
   const { t } = useLanguage();
 
   const detailedUseCases = [
+    {
+      id: "ai-doctor",
+      icon: Stethoscope,
+      title: t('aiDoctorTitle'),
+      description: "Specializovaný AI doktor Prof. Richard je průlomový projekt vyvinutý v partnerství s CME Congresses a International Academy for Clinical Hematology (IACH). Tento pokročilý AI systém s interaktivní avatar technologií poskytuje expertní konzultace v oblasti hematologie a demonstruje budoucnost zdravotnictví.",
+      image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+      alt: "AI doktor Prof. Richard s avatary technologií pro hematologii",
+      gradient: "from-red-500 to-pink-600",
+      buttonColor: "bg-red-500 hover:bg-red-600",
+      benefits: [
+        "Reálný projekt nasazený v produkčním prostředí",
+        "Partnerství s prestigními lékařskými institucemi",
+        "Specializace na hematologii s expertními znalostmi",
+        "Interaktivní AI avatary pro přirozené konzultace",
+        "Real-time konverzace s pacienty a lékaři",
+        "Demonstrace budoucnosti AI ve zdravotnictví"
+      ],
+      imagePosition: "left",
+      isProduction: true,
+      partners: ["CME Congresses", "International Academy for Clinical Hematology (IACH)"]
+    },
     {
       id: "ai-concierge",
       icon: Building2,
@@ -22,7 +43,7 @@ export function DetailedUseCases() {
         "Integrace s rezervačními a PMS systémy",
         "Zvýšení spokojenosti hostů o 35%"
       ],
-      imagePosition: "left"
+      imagePosition: "right"
     },
     {
       id: "ai-knowledge",
@@ -110,12 +131,30 @@ export function DetailedUseCases() {
                   <div className={`w-12 h-12 bg-gradient-to-br ${useCase.gradient} rounded-lg flex items-center justify-center mb-6`}>
                     <useCase.icon className="w-6 h-6 text-white" />
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-                    {useCase.title}
-                  </h3>
+                  <div className="flex items-center gap-3 mb-4">
+                    <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                      {useCase.title}
+                    </h3>
+                    {useCase.isProduction && (
+                      <div className="bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400 px-3 py-1 rounded-full text-sm font-medium">
+                        Produkční
+                      </div>
+                    )}
+                  </div>
                   <p className="text-gray-600 dark:text-gray-400 mb-6">
                     {useCase.description}
                   </p>
+                  
+                  {useCase.partners && (
+                    <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 mb-6">
+                      <h5 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Partneři projektu:</h5>
+                      <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                        {useCase.partners.map((partner, idx) => (
+                          <li key={idx}>• {partner}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                   
                   <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">
                     {t('keyBenefits')}

@@ -30,6 +30,8 @@ export const translations = {
     aiEcommerceDescription: "Personalizovaný nákupní asistent, který doporučuje produkty na míru potřebám a preferencím zákazníků.",
     aiSommelierTitle: "AI Sommelier",
     aiSommelierDescription: "Inteligentní doporučovací systém pro víno podle chuti, jídla, ceny a příležitosti.",
+    aiDoctorTitle: "AI Doktor Prof. Richard",
+    aiDoctorDescription: "Specializovaný AI doktor pro hematologii vyvinutý s CME a IACH. Reálný projekt nasazený v praxi.",
     viewAllUseCases: "Zobrazit všechny Use Cases",
     
     // About Section
@@ -121,6 +123,8 @@ export const translations = {
     aiEcommerceDescription: "Personalized shopping assistant that recommends products tailored to customer needs and preferences.",
     aiSommelierTitle: "AI Sommelier",
     aiSommelierDescription: "Intelligent wine recommendation system based on taste, food, price and occasion.",
+    aiDoctorTitle: "AI Doctor Prof. Richard",
+    aiDoctorDescription: "Specialized AI doctor for hematology developed with CME and IACH. Real project deployed in practice.",
     viewAllUseCases: "View All Use Cases",
     
     // About Section

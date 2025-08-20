@@ -7,29 +7,29 @@ export function KPISection() {
 
   const kpis = [
     {
-      number: "20+",
-      description: t('kpi1'),
+      number: "Prof. Richard",
+      description: "AI doktor pro hematologii s CME & IACH",
       color: "text-brand-blue",
       icon: Brain,
       bgColor: "bg-blue-50 dark:bg-blue-950/20"
     },
     {
-      number: "5",
-      description: t('kpi2'),
+      number: "D-ID",
+      description: "Oficiální partner pro AI avatary",
       color: "text-brand-green",
       icon: Rocket,
       bgColor: "bg-green-50 dark:bg-green-950/20"
     },
     {
-      number: "100%",
-      description: t('kpi3'),
+      number: "24/7",
+      description: "Dostupnost AI řešení",
       color: "text-purple-600",
       icon: Zap,
       bgColor: "bg-purple-50 dark:bg-purple-950/20"
     },
     {
-      number: "∞",
-      description: t('kpi4'),
+      number: "8-12 týdnů",
+      description: "Od konceptu k produkci",
       color: "text-orange-600",
       icon: Database,
       bgColor: "bg-orange-50 dark:bg-orange-950/20"
