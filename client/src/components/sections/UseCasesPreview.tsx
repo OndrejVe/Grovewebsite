@@ -69,7 +69,7 @@ export function UseCasesPreview() {
                 {useCase.description}
               </p>
               <a 
-                href={useCase.href} 
+                href="/usecases" 
                 className="inline-flex items-center text-brand-blue hover:text-blue-600 font-medium"
               >
                 {t('learnMore')}

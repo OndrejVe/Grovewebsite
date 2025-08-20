@@ -12,11 +12,7 @@ export function Footer() {
           <div>
             <Link href="/">
               <div className="flex items-center gap-3 mb-4 cursor-pointer">
-                <div className="w-8 h-8 bg-gradient-to-br from-brand-blue to-brand-green rounded-lg flex items-center justify-center">
-                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                  </svg>
-                </div>
+                <img src="/attached_assets/04_black_flat_1755710813275.png" alt="Grove Tech AI" className="h-8 w-auto" />
                 <span className="font-semibold text-lg text-gray-900 dark:text-gray-100">Grove Tech AI</span>
               </div>
             </Link>

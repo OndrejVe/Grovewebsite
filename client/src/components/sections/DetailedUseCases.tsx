@@ -12,8 +12,8 @@ export function DetailedUseCases() {
       icon: Building2,
       title: t('aiConciergeTitle'),
       description: "Inteligentní asistent pro hotelové služby, který zvládne rezervace, doporučení místních aktivit, informace o službách hotelu a zákaznickou podporu 24/7. Podporuje více jazyků a přizpůsobuje se preferencím hostů.",
-      image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
-      alt: "Luxusní hotelová lobby s moderními technologiemi",
+      image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+      alt: "Hotelový recepční pracující s AI asistentem na tabletu",
       gradient: "from-blue-500 to-purple-600",
       buttonColor: "bg-brand-blue hover:bg-blue-600",
       benefits: [
@@ -29,8 +29,8 @@ export function DetailedUseCases() {
       icon: Lightbulb,
       title: t('aiKnowledgeTitle'),
       description: "Firemní AI asistent, který zná vaše procesy, dokumenty, postupy a pomáhá zaměstnancům rychle najít odpovědi. Redukuje čas strávený hledáním informací a zlepšuje efektivitu týmu.",
-      image: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
-      alt: "Moderní kancelář s pracovníky používajícími AI nástroje",
+      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+      alt: "Zaměstnanec používající AI knowledge assistant na počítači",
       gradient: "from-green-500 to-teal-600",
       buttonColor: "bg-brand-green hover:bg-green-600",
       benefits: [
@@ -38,6 +38,40 @@ export function DetailedUseCases() {
         "Okamžitý přístup k firemním znalostem",
         "Integrace s existujícími systémy",
         "Rychlejší onboarding nových zaměstnanců"
+      ],
+      imagePosition: "right"
+    },
+    {
+      id: "ai-ecommerce",
+      icon: ShoppingBag,
+      title: t('aiEcommerceTitle'),
+      description: "Personalizovaný nákupní asistent, který doporučuje produkty na míru potřebám a preferencím zákazníků. Analyzuje chování uživatelů a předpovídá jejich preference pro maximalizaci konverzí.",
+      image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+      alt: "Zákazník nakupující online s AI doporučením produktů",
+      gradient: "from-orange-500 to-red-600",
+      buttonColor: "bg-orange-500 hover:bg-orange-600",
+      benefits: [
+        "Zvýšení konverzní míry o 45%",
+        "Personalizovaná doporučení v reálném čase",
+        "Analýza chování a preferencí zákazníků",
+        "Automatické cross-selling a up-selling"
+      ],
+      imagePosition: "left"
+    },
+    {
+      id: "ai-sommelier",
+      icon: Wine,
+      title: t('aiSommelierTitle'),
+      description: "Inteligentní doporučovací systém pro víno podle chuti, jídla, ceny a příležitosti. Kombinuje odborné znalosti sommeliéra s preferencemi uživatele pro dokonalé páření.",
+      image: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+      alt: "Sommeliér používající AI systém pro doporučení vína",
+      gradient: "from-purple-500 to-pink-600",
+      buttonColor: "bg-purple-500 hover:bg-purple-600",
+      benefits: [
+        "Expertní doporučení na základě preferencí",
+        "Dokonalé párování vína s jídlem",
+        "Personalizované cenové rozmezí",
+        "Rozšíření vinného portfolia restaurací"
       ],
       imagePosition: "right"
     }
@@ -48,10 +82,10 @@ export function DetailedUseCases() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-            Detailní Use Cases
+            {t('useCasesTitle')}
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-            Prozkoumejte naše specializované AI řešení pro různá odvětví
+            {t('useCasesSubtitle')}
           </p>
         </div>
 

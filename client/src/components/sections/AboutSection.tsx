@@ -80,11 +80,19 @@ export function AboutSection() {
 
           <div className="relative">
             <img 
-              src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" 
-              alt="Tým Grove Tech AI při práci" 
+              src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" 
+              alt="AI vývojářský tým při práci na kódu" 
               className="rounded-xl shadow-lg w-full h-auto" 
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-xl"></div>
+            
+            {/* Floating AI elements */}
+            <div className="absolute top-4 right-4 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-lg p-3">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-xs font-medium text-gray-700 dark:text-gray-300">AI Active</span>
+              </div>
+            </div>
           </div>
         </div>
 

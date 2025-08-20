@@ -26,11 +26,7 @@ export function Navigation() {
           {/* Logo */}
           <Link href="/">
             <div className="flex items-center gap-3 cursor-pointer">
-              <div className="w-8 h-8 bg-gradient-to-br from-brand-blue to-brand-green rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                </svg>
-              </div>
+              <img src="/attached_assets/04_black_flat_1755710813275.png" alt="Grove Tech AI" className="h-8 w-auto" />
               <span className="font-semibold text-lg">Grove Tech AI</span>
             </div>
           </Link>
@@ -39,12 +35,12 @@ export function Navigation() {
           <div className="hidden md:flex items-center gap-8">
             {navItems.map((item) => (
               <Link key={item.href} href={item.href}>
-                <a className={cn(
-                  "text-gray-700 dark:text-gray-300 hover:text-brand-blue transition-colors",
+                <span className={cn(
+                  "text-gray-700 dark:text-gray-300 hover:text-brand-blue transition-colors cursor-pointer",
                   location === item.href && "text-brand-blue font-medium"
                 )}>
                   {item.label}
-                </a>
+                </span>
               </Link>
             ))}
             
@@ -107,12 +103,12 @@ export function Navigation() {
           <div className="px-4 py-2 space-y-2">
             {navItems.map((item) => (
               <Link key={item.href} href={item.href}>
-                <a 
-                  className="block py-2 text-gray-700 dark:text-gray-300"
+                <span 
+                  className="block py-2 text-gray-700 dark:text-gray-300 cursor-pointer"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {item.label}
-                </a>
+                </span>
               </Link>
             ))}
             <div className="flex items-center gap-4 py-2">
