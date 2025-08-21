@@ -33,14 +33,6 @@ export function HeroSection() {
   }, [fullText]);
 
 
-  const techElements = [
-    { icon: Brain, label: "Neural Networks", position: "top-20 left-10", delay: 0 },
-    { icon: Code, label: "Python/JS/TS", position: "top-32 right-20", delay: 0.5 },
-    { icon: Database, label: "Vector DB", position: "bottom-32 left-16", delay: 1 },
-    { icon: Zap, label: "LLM APIs", position: "bottom-20 right-12", delay: 1.5 },
-    { icon: Cpu, label: "GPU Computing", position: "top-1/2 left-8", delay: 2 },
-    { icon: Bot, label: "AI Agents", position: "top-1/2 right-8", delay: 2.5 },
-  ];
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-white via-blue-50 to-purple-100 dark:from-gray-900 dark:via-blue-950 dark:to-purple-950 theme-transition min-h-screen flex items-center">
@@ -171,50 +163,102 @@ export function HeroSection() {
         </motion.div>
       </div>
 
-      {/* Enhanced Floating AI/Dev Elements */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        {/* Gradient Orbs */}
-        <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-full blur-xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-r from-pink-400/20 to-orange-400/20 rounded-full blur-xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-1/2 left-1/2 w-24 h-24 bg-gradient-to-r from-green-400/20 to-teal-400/20 rounded-full blur-xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+      {/* Flowing Gradient Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Large flowing gradient shapes */}
+        <motion.div 
+          className="absolute -top-40 -left-40 w-96 h-96 bg-gradient-to-br from-blue-400/30 via-purple-400/20 to-transparent rounded-full blur-3xl"
+          animate={{ 
+            scale: [1, 1.2, 1],
+            opacity: [0.3, 0.5, 0.3],
+            rotate: [0, 180, 360]
+          }}
+          transition={{ 
+            duration: 20, 
+            repeat: Infinity, 
+            ease: "linear" 
+          }}
+        />
+        
+        <motion.div 
+          className="absolute -top-20 -right-40 w-80 h-80 bg-gradient-to-bl from-pink-400/30 via-purple-400/20 to-transparent rounded-full blur-3xl"
+          animate={{ 
+            scale: [1.2, 1, 1.2],
+            opacity: [0.2, 0.4, 0.2],
+            rotate: [360, 180, 0]
+          }}
+          transition={{ 
+            duration: 25, 
+            repeat: Infinity, 
+            ease: "linear",
+            delay: 5
+          }}
+        />
 
-        {techElements.map((element, index) => (
-          <motion.div
-            key={index}
-            className={`absolute ${element.position} p-4 bg-white/20 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl border border-white/30 shadow-2xl`}
-            initial={{ opacity: 0, scale: 0, rotate: -20, y: 50 }}
-            animate={{ 
-              opacity: [0, 1, 1, 0],
-              scale: [0, 1.1, 1, 0.8],
-              rotate: [-20, 0, 5, -5],
-              y: [50, 0, -10, 20]
-            }}
-            transition={{ 
-              duration: 4, 
-              delay: element.delay,
-              repeat: Infinity,
-              repeatDelay: 6,
-              ease: "easeInOut"
-            }}
-          >
-            <element.icon className="w-8 h-8 text-blue-600 dark:text-green-400 mb-2" />
-            <div className="text-xs font-bold text-gray-700 dark:text-gray-300 whitespace-nowrap">
-              {element.label}
-            </div>
-          </motion.div>
-        ))}
-      </div>
+        <motion.div 
+          className="absolute -bottom-40 -left-20 w-72 h-72 bg-gradient-to-tr from-green-400/30 via-teal-400/20 to-transparent rounded-full blur-3xl"
+          animate={{ 
+            scale: [1, 1.3, 1],
+            opacity: [0.25, 0.45, 0.25],
+            rotate: [0, -180, -360]
+          }}
+          transition={{ 
+            duration: 30, 
+            repeat: Infinity, 
+            ease: "linear",
+            delay: 10
+          }}
+        />
 
-      {/* Animated Background Pattern */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-10">
-        <svg className="absolute w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-          <defs>
-            <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-              <path d="M 10 0 L 0 0 0 10" fill="none" stroke="currentColor" strokeWidth="0.5"/>
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#grid)" className="text-blue-500" />
-        </svg>
+        <motion.div 
+          className="absolute -bottom-20 -right-20 w-64 h-64 bg-gradient-to-tl from-orange-400/25 via-pink-400/15 to-transparent rounded-full blur-3xl"
+          animate={{ 
+            scale: [1.1, 1, 1.1],
+            opacity: [0.3, 0.5, 0.3],
+            rotate: [180, 0, -180]
+          }}
+          transition={{ 
+            duration: 18, 
+            repeat: Infinity, 
+            ease: "linear",
+            delay: 2
+          }}
+        />
+
+        {/* Medium flowing elements */}
+        <motion.div 
+          className="absolute top-1/4 left-1/4 w-48 h-48 bg-gradient-to-r from-purple-400/20 via-blue-400/15 to-transparent rounded-full blur-2xl"
+          animate={{ 
+            x: [0, 100, -50, 0],
+            y: [0, -50, 100, 0],
+            scale: [1, 1.2, 0.8, 1],
+            opacity: [0.2, 0.4, 0.2, 0.2]
+          }}
+          transition={{ 
+            duration: 35, 
+            repeat: Infinity, 
+            ease: "easeInOut"
+          }}
+        />
+
+        <motion.div 
+          className="absolute top-3/4 right-1/4 w-40 h-40 bg-gradient-to-l from-teal-400/20 via-green-400/15 to-transparent rounded-full blur-2xl"
+          animate={{ 
+            x: [0, -80, 60, 0],
+            y: [0, 80, -40, 0],
+            scale: [0.8, 1.1, 1, 0.8],
+            opacity: [0.15, 0.35, 0.15, 0.15]
+          }}
+          transition={{ 
+            duration: 28, 
+            repeat: Infinity, 
+            ease: "easeInOut",
+            delay: 7
+          }}
+        />
+
+        {/* Subtle mesh gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/40 via-purple-50/20 via-pink-50/20 to-green-50/40 dark:from-blue-950/20 dark:via-purple-950/10 dark:via-pink-950/10 dark:to-green-950/20"></div>
       </div>
 
       {/* Matrix-style background */}
