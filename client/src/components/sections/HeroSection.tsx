@@ -1,4 +1,4 @@
-import { ArrowRight, Brain, Code, Database, Zap, Cpu, Bot } from 'lucide-react';
+import { ArrowRight, Brain, Code, Database, Zap, Cpu, Bot, Binary, Sparkles, Atom } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { motion } from 'framer-motion';
@@ -259,6 +259,165 @@ export function HeroSection() {
 
         {/* Subtle mesh gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50/40 via-purple-50/20 via-pink-50/20 to-green-50/40 dark:from-blue-950/20 dark:via-purple-950/10 dark:via-pink-950/10 dark:to-green-950/20"></div>
+        
+        {/* AI & Dev Floating Elements */}
+        <motion.div 
+          className="absolute top-16 left-20 text-blue-500/30 dark:text-blue-400/40"
+          animate={{ 
+            y: [0, -20, 0],
+            opacity: [0.3, 0.6, 0.3],
+            rotate: [0, 10, 0]
+          }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <Brain className="w-8 h-8" />
+        </motion.div>
+
+        <motion.div 
+          className="absolute top-32 right-24 text-purple-500/30 dark:text-purple-400/40"
+          animate={{ 
+            y: [0, 15, 0],
+            x: [0, -10, 0],
+            opacity: [0.2, 0.5, 0.2],
+            rotate: [0, -15, 0]
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        >
+          <Code className="w-10 h-10" />
+        </motion.div>
+
+        <motion.div 
+          className="absolute bottom-40 left-16 text-green-500/30 dark:text-green-400/40"
+          animate={{ 
+            y: [0, -25, 0],
+            opacity: [0.25, 0.55, 0.25],
+            scale: [1, 1.1, 1]
+          }}
+          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+        >
+          <Database className="w-7 h-7" />
+        </motion.div>
+
+        <motion.div 
+          className="absolute bottom-20 right-32 text-pink-500/30 dark:text-pink-400/40"
+          animate={{ 
+            y: [0, 10, 0],
+            x: [0, 15, 0],
+            opacity: [0.3, 0.7, 0.3],
+            rotate: [0, 20, 0]
+          }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+        >
+          <Sparkles className="w-6 h-6" />
+        </motion.div>
+
+        <motion.div 
+          className="absolute top-1/2 left-12 text-teal-500/30 dark:text-teal-400/40"
+          animate={{ 
+            y: [0, -18, 0],
+            opacity: [0.2, 0.6, 0.2],
+            rotate: [0, -10, 0]
+          }}
+          transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+        >
+          <Atom className="w-8 h-8" />
+        </motion.div>
+
+        <motion.div 
+          className="absolute top-1/3 right-16 text-orange-500/30 dark:text-orange-400/40"
+          animate={{ 
+            y: [0, 12, 0],
+            x: [0, -8, 0],
+            opacity: [0.25, 0.5, 0.25],
+            scale: [0.9, 1.2, 0.9]
+          }}
+          transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
+        >
+          <Bot className="w-9 h-9" />
+        </motion.div>
+
+        {/* Floating Code Snippets */}
+        <motion.div 
+          className="absolute top-20 right-1/3 text-xs font-mono text-blue-400/20 dark:text-blue-300/30 select-none"
+          animate={{ 
+            y: [0, -30, 0],
+            opacity: [0.2, 0.4, 0.2]
+          }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+        >
+          const ai = new LLM()
+        </motion.div>
+
+        <motion.div 
+          className="absolute bottom-1/3 left-1/4 text-xs font-mono text-purple-400/20 dark:text-purple-300/30 select-none"
+          animate={{ 
+            y: [0, 20, 0],
+            opacity: [0.15, 0.35, 0.15]
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+        >
+          {"{ model: 'gpt-4o' }"}
+        </motion.div>
+
+        <motion.div 
+          className="absolute top-2/3 right-1/4 text-xs font-mono text-green-400/20 dark:text-green-300/30 select-none"
+          animate={{ 
+            y: [0, -15, 0],
+            x: [0, 10, 0],
+            opacity: [0.2, 0.4, 0.2]
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 4 }}
+        >
+          await generate()
+        </motion.div>
+
+        {/* Binary/Data Streams */}
+        <motion.div 
+          className="absolute top-40 left-1/3 text-xs font-mono text-teal-400/15 dark:text-teal-300/25 select-none"
+          animate={{ 
+            y: [0, -40, 0],
+            opacity: [0.15, 0.3, 0.15]
+          }}
+          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+        >
+          01001001 01000001
+        </motion.div>
+
+        <motion.div 
+          className="absolute bottom-1/4 right-1/3 text-xs font-mono text-pink-400/15 dark:text-pink-300/25 select-none"
+          animate={{ 
+            y: [0, 25, 0],
+            opacity: [0.1, 0.25, 0.1]
+          }}
+          transition={{ duration: 13, repeat: Infinity, ease: "linear", delay: 3 }}
+        >
+          11000001 10101010
+        </motion.div>
+
+        {/* Algorithmic Patterns */}
+        <motion.div 
+          className="absolute top-1/4 right-20 text-sm text-orange-400/20 dark:text-orange-300/30 select-none"
+          animate={{ 
+            rotate: [0, 360],
+            scale: [1, 1.1, 1],
+            opacity: [0.2, 0.4, 0.2]
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        >
+          ⚡
+        </motion.div>
+
+        <motion.div 
+          className="absolute bottom-1/2 left-1/2 text-lg text-blue-400/20 dark:text-blue-300/30 select-none"
+          animate={{ 
+            rotate: [360, 0],
+            scale: [0.8, 1.2, 0.8],
+            opacity: [0.15, 0.35, 0.15]
+          }}
+          transition={{ duration: 18, repeat: Infinity, ease: "linear", delay: 5 }}
+        >
+          ⟨⟩
+        </motion.div>
       </div>
 
       {/* Matrix-style background */}
