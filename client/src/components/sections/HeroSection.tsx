@@ -43,7 +43,7 @@ export function HeroSection() {
   ];
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-gray-50 via-blue-50 to-green-50 dark:from-gray-900 dark:via-blue-950 dark:to-green-950 theme-transition min-h-screen flex items-center">
+    <section className="relative overflow-hidden bg-gradient-to-br from-white via-blue-50 to-purple-100 dark:from-gray-900 dark:via-blue-950 dark:to-purple-950 theme-transition min-h-screen flex items-center">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
         <motion.div 
           className="text-center"
@@ -52,58 +52,90 @@ export function HeroSection() {
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
           <motion.div
-            className="inline-flex items-center gap-2 bg-white dark:bg-gray-800 px-4 py-2 rounded-full shadow-lg mb-6"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            className="inline-flex items-center gap-3 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl px-6 py-3 rounded-full shadow-2xl mb-8 border border-white/20"
+            initial={{ opacity: 0, scale: 0.8, y: -20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1, type: "spring", stiffness: 100 }}
           >
-            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">AI Development in Progress</span>
+            <div className="relative">
+              <div className="w-4 h-4 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full animate-pulse"></div>
+              <div className="absolute inset-0 w-4 h-4 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full animate-ping opacity-75"></div>
+            </div>
+            <span className="text-sm font-bold text-gray-800 dark:text-gray-200 tracking-wide">✨ AI Development Studio</span>
           </motion.div>
           
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight mb-6">
-            <span className="block text-gray-900 dark:text-gray-100">{t('heroTitle')}</span>
-            <span className="block bg-gradient-to-r from-brand-blue via-purple-500 to-brand-green bg-clip-text text-transparent">
+          <h1 className="text-4xl sm:text-6xl lg:text-8xl font-black tracking-tight mb-8 leading-none">
+            <motion.span 
+              className="block text-gray-900 dark:text-gray-100 mb-2"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+            >
+              {t('heroTitle')}
+            </motion.span>
+            <motion.span 
+              className="block bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+            >
               {typewriterText}
-              {showCursor && <span className="animate-pulse">|</span>}
-            </span>
+              {showCursor && <span className="animate-pulse text-blue-600">|</span>}
+            </motion.span>
           </h1>
           
-          <div className="max-w-4xl mx-auto mb-8">
-            <p className="text-xl sm:text-2xl text-gray-600 dark:text-gray-400 mb-4">
+          <motion.div 
+            className="max-w-5xl mx-auto mb-12"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.7 }}
+          >
+            <p className="text-xl sm:text-3xl text-gray-700 dark:text-gray-300 mb-8 font-light leading-relaxed">
               {t('heroSubtitle')}
             </p>
-            <div className="flex flex-wrap justify-center gap-3 text-sm">
-              <span className="bg-brand-blue/10 text-brand-blue px-3 py-1 rounded-full font-medium">RAG Systems</span>
-              <span className="bg-brand-green/10 text-brand-green px-3 py-1 rounded-full font-medium">Multilingual</span>
-              <span className="bg-purple-100 text-purple-600 px-3 py-1 rounded-full font-medium">On-prem/Cloud</span>
-              <span className="bg-orange-100 text-orange-600 px-3 py-1 rounded-full font-medium">Security & Audit</span>
-              <span className="bg-pink-100 text-pink-600 px-3 py-1 rounded-full font-medium">Real-time Avatars</span>
+            <div className="flex flex-wrap justify-center gap-4 text-sm">
+              {[
+                { label: "RAG Systems", color: "from-blue-500 to-blue-600", text: "text-white" },
+                { label: "Multilingual", color: "from-green-500 to-green-600", text: "text-white" },
+                { label: "On-prem/Cloud", color: "from-purple-500 to-purple-600", text: "text-white" },
+                { label: "Security & Audit", color: "from-orange-500 to-orange-600", text: "text-white" },
+                { label: "Real-time Avatars", color: "from-pink-500 to-pink-600", text: "text-white" }
+              ].map((chip, index) => (
+                <motion.span 
+                  key={chip.label}
+                  className={`bg-gradient-to-r ${chip.color} ${chip.text} px-4 py-2 rounded-full font-bold shadow-lg hover:scale-105 transition-transform cursor-default`}
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.9 + index * 0.1 }}
+                >
+                  {chip.label}
+                </motion.span>
+              ))}
             </div>
-          </div>
+          </motion.div>
           
           <motion.div 
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
-            initial={{ opacity: 0, y: 20 }}
+            className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16"
+            initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+            transition={{ duration: 0.8, delay: 1.4, ease: "easeOut" }}
           >
-            <a href="#about">
+            <a href="#contact" className="group">
               <Button 
                 size="lg" 
-                className="bg-gradient-to-r from-brand-blue to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-4 transform hover:scale-105 hover:shadow-xl transition-all duration-200"
+                className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white px-10 py-5 text-lg font-bold transform hover:scale-110 hover:shadow-2xl transition-all duration-300 group-hover:rotate-1"
               >
-                {t('learnMore')}
-                <ArrowRight className="w-5 h-5 ml-2" />
+                🚀 Začít projekt
+                <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
               </Button>
             </a>
-            <a href="#contact">
+            <a href="#about" className="group">
               <Button 
                 variant="outline" 
                 size="lg" 
-                className="px-8 py-4 border-2 border-brand-blue/30 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm hover:border-brand-blue hover:text-brand-blue hover:bg-white/80 transition-all duration-200"
+                className="px-10 py-5 text-lg font-semibold border-3 border-blue-300/50 bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl hover:border-blue-500 hover:text-blue-600 hover:bg-white/90 hover:shadow-xl transition-all duration-300 group-hover:-rotate-1"
               >
-                {t('contactUs')}
+                ✨ {t('learnMore')}
               </Button>
             </a>
           </motion.div>
@@ -139,28 +171,50 @@ export function HeroSection() {
         </motion.div>
       </div>
 
-      {/* Floating AI/Dev Elements */}
+      {/* Enhanced Floating AI/Dev Elements */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        {/* Gradient Orbs */}
+        <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-full blur-xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-r from-pink-400/20 to-orange-400/20 rounded-full blur-xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-1/2 left-1/2 w-24 h-24 bg-gradient-to-r from-green-400/20 to-teal-400/20 rounded-full blur-xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+
         {techElements.map((element, index) => (
           <motion.div
             key={index}
-            className={`absolute ${element.position} p-3 bg-white/10 dark:bg-gray-800/20 backdrop-blur-sm rounded-lg border border-white/20`}
-            initial={{ opacity: 0, scale: 0, rotate: -10 }}
-            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            className={`absolute ${element.position} p-4 bg-white/20 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl border border-white/30 shadow-2xl`}
+            initial={{ opacity: 0, scale: 0, rotate: -20, y: 50 }}
+            animate={{ 
+              opacity: [0, 1, 1, 0],
+              scale: [0, 1.1, 1, 0.8],
+              rotate: [-20, 0, 5, -5],
+              y: [50, 0, -10, 20]
+            }}
             transition={{ 
-              duration: 0.6, 
+              duration: 4, 
               delay: element.delay,
               repeat: Infinity,
-              repeatType: "reverse",
-              repeatDelay: 8
+              repeatDelay: 6,
+              ease: "easeInOut"
             }}
           >
-            <element.icon className="w-6 h-6 text-brand-blue dark:text-brand-green" />
-            <div className="text-xs text-gray-600 dark:text-gray-400 mt-1 whitespace-nowrap">
+            <element.icon className="w-8 h-8 text-blue-600 dark:text-green-400 mb-2" />
+            <div className="text-xs font-bold text-gray-700 dark:text-gray-300 whitespace-nowrap">
               {element.label}
             </div>
           </motion.div>
         ))}
+      </div>
+
+      {/* Animated Background Pattern */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-10">
+        <svg className="absolute w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <defs>
+            <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+              <path d="M 10 0 L 0 0 0 10" fill="none" stroke="currentColor" strokeWidth="0.5"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#grid)" className="text-blue-500" />
+        </svg>
       </div>
 
       {/* Matrix-style background */}

@@ -77,7 +77,7 @@ export function UseCasesPreview() {
               </p>
             </div>
             <a 
-              href="/usecases" 
+              href="#contact" 
               className="inline-flex items-center text-brand-blue hover:text-blue-600 font-medium"
             >
               {t('learnMore')}
@@ -106,7 +106,7 @@ export function UseCasesPreview() {
                 {useCase.description}
               </p>
               <a 
-                href="/usecases" 
+                href="#contact" 
                 className="inline-flex items-center text-brand-blue hover:text-blue-600 font-medium"
               >
                 {t('learnMore')}
@@ -117,9 +117,9 @@ export function UseCasesPreview() {
         </div>
 
         <div className="text-center mt-12">
-          <a href="/usecases">
+          <a href="#contact">
             <Button className="bg-brand-blue hover:bg-blue-600 text-white px-8 py-3">
-              {t('viewAllUseCases')}
+              Kontaktujte nás pro konzultaci
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </a>
