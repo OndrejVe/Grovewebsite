@@ -61,7 +61,7 @@ export function HeroSection() {
               <div className="w-4 h-4 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full animate-pulse"></div>
               <div className="absolute inset-0 w-4 h-4 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full animate-ping opacity-75"></div>
             </div>
-            <span className="text-sm font-bold text-gray-800 dark:text-gray-200 tracking-wide">✨ AI Development Studio</span>
+            <span className="text-sm font-bold text-gray-800 dark:text-gray-200 tracking-wide">AI Development Studio</span>
           </motion.div>
           
           <h1 className="text-4xl sm:text-6xl lg:text-8xl font-black tracking-tight mb-8 leading-none">
@@ -125,7 +125,7 @@ export function HeroSection() {
                 size="lg" 
                 className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white px-10 py-5 text-lg font-bold transform hover:scale-110 hover:shadow-2xl transition-all duration-300 group-hover:rotate-1"
               >
-                🚀 Začít projekt
+                Začít projekt
                 <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" />
               </Button>
             </a>
@@ -135,7 +135,7 @@ export function HeroSection() {
                 size="lg" 
                 className="px-10 py-5 text-lg font-semibold border-3 border-blue-300/50 bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl hover:border-blue-500 hover:text-blue-600 hover:bg-white/90 hover:shadow-xl transition-all duration-300 group-hover:-rotate-1"
               >
-                ✨ {t('learnMore')}
+{t('learnMore')}
               </Button>
             </a>
           </motion.div>
