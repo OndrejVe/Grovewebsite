@@ -1,4 +1,4 @@
-/*    /index.html   200
+//    /index.html   200
 
 // Cloudflare Pages SPA fallback
 export const redirects = `
