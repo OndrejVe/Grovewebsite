@@ -1,76 +1,54 @@
-// Vite helpery pro vývoj i produkci
-import express, { type Express } from "express";
-import fs from "fs";
-import path from "path";
-import {
-  createServer as createViteServer,
-  type Server as ViteDevServer
-} from "vite";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My App</title>
+  <!-- Cloudflare Turnstile -->
+  <meta name="turnstile-sitekey" content="0x4AAAAAABuJkcYWMITGMDOgrO-ynWxtcbw" />
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+</head>
+<body>
+  <div id="app"></div>
 
-// jednoduchý logger pro konzoli (používá se i ze server/index.ts)
-export function log(message: string, source: "express" | "vite" = "express") {
-  const ts = new Date().toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: true
-  });
-  // eslint-disable-next-line no-console
-  console.log(`[${ts}] [${source}] ${message}`);
-}
-
-/**
- * Zapojí Vite v DEV režimu jako middleware.
- * V produkci se tenhle helper nevolá (servíruje se statika z dist/public).
- */
-export async function setupVite(app: Express, server?: any) {
-  const vite = await createViteServer({
-    server: {
-      middlewareMode: true,
-      hmr: { server },
-      allowedHosts: true
-    },
-    appType: "custom",
-    logLevel: "info"
-  });
-
-  app.use(vite.middlewares);
-
-  // šablona index.html v DEV: Vite ji transformuje (HMR, importy atd.)
-  app.use(async (req, res, next) => {
-    try {
-      if (req.method !== "GET") return next();
-      if (req.originalUrl !== "/" && !req.originalUrl.startsWith("/index.html")) return next();
-
-      const indexHtmlPath = path.resolve("client", "index.html");
-      let html = fs.readFileSync(indexHtmlPath, "utf-8");
-      html = await vite.transformIndexHtml(req.originalUrl, html);
-      res.status(200).set({ "Content-Type": "text/html" }).end(html);
-    } catch (e) {
-      // @ts-ignore - dostupné pouze v DEV
-      vite.ssrFixStacktrace?.(e as Error);
-      next(e);
-    }
-  });
-
-  log("Vite dev middlewares attached", "vite");
-}
-
-/**
- * Produkční statika – po buildu se servíruje z dist/public
- */
-export function serveStatic(app: Express, rootDir = "dist/public") {
-  const abs = path.resolve(rootDir);
-  app.use(express.static(abs));
-
-  // Fallback pro SPA (podporuje nested routy)
-  app.get("*", (_req, res, next) => {
-    const indexPath = path.join(abs, "index.html");
-    if (fs.existsSync(indexPath)) {
-      return res.sendFile(indexPath);
-    }
-    return next();
-  });
-
-  log(`Serving static from ${abs}`);
-}
+  <!-- Auto‑mount Turnstile widget just above the submit button of the contact form -->
+  <script>
+    (function () {
+      var meta = document.querySelector('meta[name="turnstile-sitekey"]');
+      var siteKey = meta ? meta.getAttribute('content') : '';
+      if (!siteKey || siteKey === '0x4AAAAAABuJkcYWMITGMDOgrO-ynWxtcbw') {
+        console.warn('[Turnstile] Site key missing – open client/index.html and replace PASTE_TURNSTILE_SITE_KEY_HERE with your real key.');
+        return;
+      }
+      function mount() {
+        // Heuristicky vybereme kontaktní formulář (obsahuje textarea a e‑mail)
+        var forms = Array.prototype.slice.call(document.querySelectorAll('form'));
+        var contact =
+          forms.find(function (f) {
+            return f.querySelector('textarea') && (f.querySelector('input[type="email"]') || f.querySelector('input[name*="email" i]'));
+          }) || forms[0];
+        if (!contact) return;
+        // Najdeme submit tlačítko
+        var submit = contact.querySelector('button[type="submit"], input[type="submit"]');
+        // Vytvoříme kontejner pro widget
+        var holder = document.createElement('div');
+        holder.className = 'cf-turnstile';
+        holder.setAttribute('data-sitekey', siteKey);
+        holder.style.margin = '12px 0';
+        // Vložíme těsně nad submit
+        if (submit && submit.parentNode) {
+          submit.parentNode.insertBefore(holder, submit);
+        } else {
+          contact.appendChild(holder);
+        }
+        // Turnstile sám přidá skryté pole 'cf-turnstile-response' do formuláře
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', mount);
+      } else {
+        mount();
+      }
+    })();
+  </script>
+</body>
+</html>
