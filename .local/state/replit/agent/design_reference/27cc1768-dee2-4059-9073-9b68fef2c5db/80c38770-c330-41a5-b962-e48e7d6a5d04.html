@@ -1,0 +1,869 @@
+<html lang="cs" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grove Tech AI - Kde jiní končí, my teprve začínáme</title>
+    <meta name="description" content="AI vývojáři a systémoví integrátoři. Specializujeme se na integraci umělé inteligence do reálných procesů.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons-sprite.svg"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            blue: '#3B82F6',
+                            green: '#10B981',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.8s ease-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            },
+            darkMode: 'class',
+        };
+    </script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .theme-transition {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        .hover-lift {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .dark .hover-lift:hover {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 theme-transition font-sans">
+
+    <!-- Navigation -->
+    <!-- @COMPONENT: Navigation [responsive with language switcher and theme toggle] -->
+    <nav class="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 theme-transition">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-gradient-to-br from-brand-blue to-brand-green rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <span class="font-semibold text-lg">Grove Tech AI</span>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#home" class="text-gray-700 dark:text-gray-300 hover:text-brand-blue transition-colors">Domů</a>
+                    <a href="#about" class="text-gray-700 dark:text-gray-300 hover:text-brand-blue transition-colors">O nás</a>
+                    <a href="#usecases" class="text-gray-700 dark:text-gray-300 hover:text-brand-blue transition-colors">Use Cases</a>
+                    <a href="#contact" class="text-gray-700 dark:text-gray-300 hover:text-brand-blue transition-colors">Kontakt</a>
+                    
+                    <!-- Language Switcher -->
+                    <div class="flex items-center gap-2 text-sm">
+                        <button data-lang="cs" class="px-2 py-1 rounded bg-brand-blue text-white font-medium">CZ</button>
+                        <button data-lang="en" class="px-2 py-1 rounded text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">EN</button>
+                    </div>
+
+                    <!-- Theme Toggle -->
+                    <button id="themeToggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <svg class="w-5 h-5 dark:hidden" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>
+                        </svg>
+                        <svg class="w-5 h-5 hidden dark:block" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M5.64,17l-.71.71a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71A1,1,0,0,0,5.64,17ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm7-7a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41l-.71-.71A1,1,0,0,0,4.93,6.34Zm12,.29a1,1,0,0,0,.7-.29l.71-.71a1,1,0,1,0-1.41-1.41L17,5.64a1,1,0,0,0,0,1.41A1,1,0,0,0,17.66,7.34ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-9,8a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19ZM18.36,17A1,1,0,0,0,17,18.36l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM12,6.5A5.5,5.5,0,1,0,17.5,12,5.51,5.51,0,0,0,12,6.5Zm0,9A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Mobile menu button -->
+                <button class="md:hidden p-2" id="mobileMenuBtn">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+    <!-- @END_COMPONENT: Navigation -->
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="hidden md:hidden bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+        <div class="px-4 py-2 space-y-2">
+            <a href="#home" class="block py-2 text-gray-700 dark:text-gray-300">Domů</a>
+            <a href="#about" class="block py-2 text-gray-700 dark:text-gray-300">O nás</a>
+            <a href="#usecases" class="block py-2 text-gray-700 dark:text-gray-300">Use Cases</a>
+            <a href="#contact" class="block py-2 text-gray-700 dark:text-gray-300">Kontakt</a>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <!-- @COMPONENT: HeroSection [animated with CTA buttons] -->
+    <section id="home" class="relative overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 theme-transition">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-32">
+            <div class="text-center animate-fade-in">
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
+                    <span class="block text-gray-900 dark:text-gray-100">Kde jiní končí,</span>
+                    <span class="block bg-gradient-to-r from-brand-blue to-brand-green bg-clip-text text-transparent">my teprve začínáme</span>
+                </h1>
+                <p class="text-xl sm:text-2xl text-gray-600 dark:text-gray-400 mb-8 max-w-3xl mx-auto">
+                    AI vývojáři a systémoví integrátoři. Specializujeme se na integraci umělé inteligence do reálných procesů.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center animate-slide-up">
+                    <a href="#about" class="inline-flex items-center px-8 py-4 bg-brand-blue text-white font-semibold rounded-lg hover:bg-blue-600 transition-all duration-200 transform hover:scale-105 hover:shadow-lg">
+                        Zjistit více
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </a>
+                    <a href="#contact" class="inline-flex items-center px-8 py-4 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-semibold rounded-lg hover:border-brand-blue hover:text-brand-blue transition-all duration-200">
+                        Kontaktujte nás
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Animated background elements -->
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+            <div class="absolute top-20 left-10 w-20 h-20 bg-brand-blue/10 rounded-full animate-pulse-slow"></div>
+            <div class="absolute bottom-20 right-10 w-32 h-32 bg-brand-green/10 rounded-full animate-pulse-slow" style="animation-delay: 1s;"></div>
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-gradient-to-r from-brand-blue/5 to-brand-green/5 rounded-full animate-pulse-slow" style="animation-delay: 2s;"></div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: HeroSection -->
+
+    <!-- KPI Section -->
+    <!-- @COMPONENT: KPISection [metrics and achievements] -->
+    <section class="py-16 bg-white dark:bg-gray-900 theme-transition">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="text-center p-6 rounded-lg bg-gray-50 dark:bg-gray-800 hover-lift">
+                    <div class="text-3xl font-bold text-brand-blue mb-2">20+</div>
+                    <p class="text-gray-600 dark:text-gray-400">Nasazených AI řešení v praxi</p>
+                </div>
+                <div class="text-center p-6 rounded-lg bg-gray-50 dark:bg-gray-800 hover-lift">
+                    <div class="text-3xl font-bold text-brand-green mb-2">5</div>
+                    <p class="text-gray-600 dark:text-gray-400">Různých odvětví</p>
+                </div>
+                <div class="text-center p-6 rounded-lg bg-gray-50 dark:bg-gray-800 hover-lift">
+                    <div class="text-3xl font-bold text-brand-blue mb-2">100%</div>
+                    <p class="text-gray-600 dark:text-gray-400">Exkluzivní partnerství s D-ID</p>
+                </div>
+                <div class="text-center p-6 rounded-lg bg-gray-50 dark:bg-gray-800 hover-lift">
+                    <div class="text-3xl font-bold text-brand-green mb-2">∞</div>
+                    <p class="text-gray-600 dark:text-gray-400">Od analýzy po škálovatelnou produkci</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: KPISection -->
+
+    <!-- Use Cases Preview -->
+    <!-- @COMPONENT: UseCasesPreview [overview of AI solutions] -->
+    <section id="usecases-preview" class="py-20 bg-gray-50 dark:bg-gray-800 theme-transition">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">Naše AI řešení</h2>
+                <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                    Specializujeme se na čtyři klíčové oblasti umělé inteligence pro byznys
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- AI Concierge -->
+                <div class="bg-white dark:bg-gray-900 rounded-xl p-8 shadow-sm hover-lift theme-transition">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">AI Concierge pro hotely</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">Inteligentní asistent pro hotelové služby, který zvládne rezervace, doporučení a zákaznickou podporu 24/7.</p>
+                    <a href="#ai-concierge" class="inline-flex items-center text-brand-blue hover:text-blue-600 font-medium">
+                        Zjistit více
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </a>
+                </div>
+
+                <!-- AI Knowledge Assistant -->
+                <div class="bg-white dark:bg-gray-900 rounded-xl p-8 shadow-sm hover-lift theme-transition">
+                    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-600 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">AI Knowledge Assistant</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">Firemní AI asistent, který zná vaše procesy, dokumenty a pomáhá zaměstnancům rychle najít odpovědi.</p>
+                    <a href="#ai-knowledge" class="inline-flex items-center text-brand-blue hover:text-blue-600 font-medium">
+                        Zjistit více
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </a>
+                </div>
+
+                <!-- AI E-commerce Guide -->
+                <div class="bg-white dark:bg-gray-900 rounded-xl p-8 shadow-sm hover-lift theme-transition">
+                    <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">AI E-commerce Guide</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">Personalizovaný nákupní asistent, který doporučuje produkty na míru potřebám a preferencím zákazníků.</p>
+                    <a href="#ai-ecommerce" class="inline-flex items-center text-brand-blue hover:text-blue-600 font-medium">
+                        Zjistit více
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </a>
+                </div>
+
+                <!-- AI Sommelier -->
+                <div class="bg-white dark:bg-gray-900 rounded-xl p-8 shadow-sm hover-lift theme-transition">
+                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">AI Sommelier</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">Inteligentní doporučovací systém pro víno podle chuti, jídla, ceny a příležitosti.</p>
+                    <a href="#ai-sommelier" class="inline-flex items-center text-brand-blue hover:text-blue-600 font-medium">
+                        Zjistit více
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="text-center mt-12">
+                <a href="#usecases" class="inline-flex items-center px-8 py-3 bg-brand-blue text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors">
+                    Zobrazit všechny Use Cases
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: UseCasesPreview -->
+
+    <!-- About Section -->
+    <!-- @COMPONENT: AboutSection [company description and timeline] -->
+    <section id="about" class="py-20 bg-white dark:bg-gray-900 theme-transition">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">O nás</h2>
+                <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                    Jsme tým expertů na umělou inteligenci a automatizaci. Nepřipoutáváme se k jednomu LLM – vždy volíme model a technologii, která nejlépe sedí na projekt.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+                <div>
+                    <h3 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-6">Naše hodnoty</h3>
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-8 h-8 bg-brand-blue rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">Inovace</h4>
+                                <p class="text-gray-600 dark:text-gray-400">Průkopníci v oblasti AI technologií, vždy o krok napřed.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-8 h-8 bg-brand-green rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">Rychlost</h4>
+                                <p class="text-gray-600 dark:text-gray-400">Od konceptu k funkčnímu řešení v rekordním čase.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">Spolehlivost</h4>
+                                <p class="text-gray-600 dark:text-gray-400">Garantovaná kvalita a dlouhodobá podpora všech řešení.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Company photo placeholder -->
+                <!-- Modern office space with team collaboration -->
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" alt="Tým Grove Tech AI při práci" class="rounded-xl shadow-lg w-full h-auto" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-xl"></div>
+                </div>
+            </div>
+
+            <!-- Development Timeline -->
+            <div class="bg-gray-50 dark:bg-gray-800 rounded-2xl p-8 lg:p-12 theme-transition">
+                <h3 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-8 text-center">Náš proces vývoje</h3>
+                
+                <!-- @FUNCTIONALITY: This timeline should be animated on scroll -->
+                <div class="relative">
+                    <!-- Timeline line -->
+                    <div class="absolute left-4 md:left-1/2 md:transform md:-translate-x-1/2 top-0 bottom-0 w-0.5 bg-brand-blue"></div>
+                    
+                    <div class="space-y-8">
+                        <!-- Step 1: Analýza -->
+                        <div class="relative flex items-center">
+                            <div class="absolute left-0 md:left-1/2 md:transform md:-translate-x-1/2 w-8 h-8 bg-brand-blue rounded-full flex items-center justify-center z-10">
+                                <span class="text-white font-semibold text-sm">1</span>
+                            </div>
+                            <div class="ml-12 md:ml-0 md:w-1/2 md:pr-8 md:text-right">
+                                <h4 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Analýza</h4>
+                                <p class="text-gray-600 dark:text-gray-400 mt-2">Důkladné zmapování požadavků a stávajících procesů</p>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Prototyp -->
+                        <div class="relative flex items-center">
+                            <div class="absolute left-0 md:left-1/2 md:transform md:-translate-x-1/2 w-8 h-8 bg-brand-green rounded-full flex items-center justify-center z-10">
+                                <span class="text-white font-semibold text-sm">2</span>
+                            </div>
+                            <div class="ml-12 md:ml-0 md:w-1/2 md:pl-8 md:ml-auto">
+                                <h4 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Prototyp</h4>
+                                <p class="text-gray-600 dark:text-gray-400 mt-2">Rychlé vytvoření funkčního MVP pro testování konceptu</p>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: API integrace -->
+                        <div class="relative flex items-center">
+                            <div class="absolute left-0 md:left-1/2 md:transform md:-translate-x-1/2 w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center z-10">
+                                <span class="text-white font-semibold text-sm">3</span>
+                            </div>
+                            <div class="ml-12 md:ml-0 md:w-1/2 md:pr-8 md:text-right">
+                                <h4 class="text-lg font-semibold text-gray-900 dark:text-gray-100">API integrace</h4>
+                                <p class="text-gray-600 dark:text-gray-400 mt-2">Propojení s existujícími systémy a externí APIs</p>
+                            </div>
+                        </div>
+
+                        <!-- Step 4: Testování -->
+                        <div class="relative flex items-center">
+                            <div class="absolute left-0 md:left-1/2 md:transform md:-translate-x-1/2 w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center z-10">
+                                <span class="text-white font-semibold text-sm">4</span>
+                            </div>
+                            <div class="ml-12 md:ml-0 md:w-1/2 md:pl-8 md:ml-auto">
+                                <h4 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Testování</h4>
+                                <p class="text-gray-600 dark:text-gray-400 mt-2">Komplexní testování funkcionalit a optimalizace výkonu</p>
+                            </div>
+                        </div>
+
+                        <!-- Step 5: Škálování -->
+                        <div class="relative flex items-center">
+                            <div class="absolute left-0 md:left-1/2 md:transform md:-translate-x-1/2 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center z-10">
+                                <span class="text-white font-semibold text-sm">5</span>
+                            </div>
+                            <div class="ml-12 md:ml-0 md:w-1/2 md:pr-8 md:text-right">
+                                <h4 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Škálování</h4>
+                                <p class="text-gray-600 dark:text-gray-400 mt-2">Nasazení do produkce a kontinuální optimalizace</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: AboutSection -->
+
+    <!-- Detailed Use Cases Section -->
+    <!-- @COMPONENT: DetailedUseCases [individual use case landing pages] -->
+    <section id="usecases" class="py-20 bg-gray-50 dark:bg-gray-800 theme-transition">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">Detailní Use Cases</h2>
+                <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                    Prozkoumejte naše specializované AI řešení pro různá odvětví
+                </p>
+            </div>
+
+            <!-- AI Concierge Details -->
+            <div id="ai-concierge" class="mb-20 bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-lg theme-transition">
+                <div class="grid grid-cols-1 lg:grid-cols-2">
+                    <!-- Hotel lobby with modern AI kiosk -->
+                    <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" alt="Luxusní hotelová lobby s moderními technologiemi" class="w-full h-64 lg:h-full object-cover" />
+                    <div class="p-8 lg:p-12">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mb-6">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">AI Concierge pro hotely</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-6">
+                            Inteligentní asistent pro hotelové služby, který zvládne rezervace, doporučení místních aktivit, 
+                            informace o službách hotelu a zákaznickou podporu 24/7. Podporuje více jazyků a přizpůsobuje se preferencím hostů.
+                        </p>
+                        
+                        <h4 class="font-semibold text-gray-900 dark:text-gray-100 mb-3">Klíčové přínosy:</h4>
+                        <ul class="space-y-2 text-gray-600 dark:text-gray-400 mb-6">
+                            <li class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-brand-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                24/7 dostupnost bez dodatečných nákladů na personál
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-brand-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Personalizovaná doporučení pro každého hosta
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-brand-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Integrace s rezervačními a PMS systémy
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-brand-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Zvýšení spokojenosti hostů o 35%
+                            </li>
+                        </ul>
+                        
+                        <a href="#contact" class="inline-flex items-center px-6 py-3 bg-brand-blue text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors">
+                            Chci vědět více
+                            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Knowledge Assistant Details -->
+            <div id="ai-knowledge" class="mb-20 bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-lg theme-transition">
+                <div class="grid grid-cols-1 lg:grid-cols-2">
+                    <div class="p-8 lg:p-12 order-2 lg:order-1">
+                        <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-600 rounded-lg flex items-center justify-center mb-6">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">AI Knowledge Assistant</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-6">
+                            Firemní AI asistent, který zná vaše procesy, dokumenty, postupy a pomáhá zaměstnancům 
+                            rychle najít odpovědi. Redukuje čas strávený hledáním informací a zlepšuje efektivitu týmu.
+                        </p>
+                        
+                        <h4 class="font-semibold text-gray-900 dark:text-gray-100 mb-3">Klíčové přínosy:</h4>
+                        <ul class="space-y-2 text-gray-600 dark:text-gray-400 mb-6">
+                            <li class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-brand-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Snížení času hledání informací o 70%
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-brand-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Okamžitý přístup k firemním znalostem
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-brand-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Integrace s existujícími systémy
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-brand-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Rychlejší onboarding nových zaměstnanců
+                            </li>
+                        </ul>
+                        
+                        <a href="#contact" class="inline-flex items-center px-6 py-3 bg-brand-green text-white font-semibold rounded-lg hover:bg-green-600 transition-colors">
+                            Chci vědět více
+                            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                            </svg>
+                        </a>
+                    </div>
+                    <!-- Modern office with employees using AI assistant on computers -->
+                    <img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" alt="Moderní kancelář s pracovníky používajícími AI nástroje" class="w-full h-64 lg:h-full object-cover order-1 lg:order-2" />
+                </div>
+            </div>
+
+            <!-- More use cases would follow similar pattern -->
+            <!-- AI E-commerce Guide and AI Sommelier sections would be implemented similarly -->
+        </div>
+    </section>
+    <!-- @END_COMPONENT: DetailedUseCases -->
+
+    <!-- Contact Section -->
+    <!-- @COMPONENT: ContactSection [contact form and company details] -->
+    <section id="contact" class="py-20 bg-white dark:bg-gray-900 theme-transition">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">Kontaktujte nás</h2>
+                <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                    Máte projekt? Rádi s vámi probereme možnosti implementace AI řešení ve vaší firmě.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Contact Form -->
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-2xl p-8 theme-transition">
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">Napište nám</h3>
+                    <form data-implementation="Should submit to /api/contact endpoint" class="space-y-6">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Jméno a příjmení</label>
+                            <input type="text" id="name" name="name" required data-mock="true" 
+                                   class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 theme-transition">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">E-mailová adresa</label>
+                            <input type="email" id="email" name="email" required data-mock="true"
+                                   class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 theme-transition">
+                        </div>
+                        <div>
+                            <label for="company" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Firma (volitelné)</label>
+                            <input type="text" id="company" name="company" data-mock="true"
+                                   class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 theme-transition">
+                        </div>
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Zpráva</label>
+                            <textarea id="message" name="message" rows="5" required data-mock="true"
+                                      class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 theme-transition"
+                                      placeholder="Popište váš projekt nebo požadavky..."></textarea>
+                        </div>
+                        <button type="submit" 
+                                data-event="click:handleFormSubmit"
+                                data-implementation="Should validate form and send via Cloudflare Email Routing"
+                                class="w-full px-6 py-3 bg-brand-blue text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors focus:ring-2 focus:ring-brand-blue focus:ring-offset-2">
+                            Odeslat zprávu
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="space-y-8">
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">Kontaktní informace</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 bg-brand-blue rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-gray-900 dark:text-gray-100">E-mail</p>
+                                    <a href="mailto:info@grovetechai.com" class="text-brand-blue hover:text-blue-600">info@grovetechai.com</a>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 bg-brand-green rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-gray-900 dark:text-gray-100">Telefon</p>
+                                    <a href="tel:+420604132233" class="text-brand-green hover:text-green-600">+420 604 132 233</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-semibold text-gray-900 dark:text-gray-100 mb-4">Firemní údaje</h4>
+                        <div class="text-gray-600 dark:text-gray-400 space-y-2">
+                            <p><strong>Grove Tech AI s.r.o.</strong></p>
+                            <p>IČO: 21707146</p>
+                            <p>DIČ: CZ21707146</p>
+                            <p>Varšavská 715/36<br>Praha 2 – Vinohrady, 120 00</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-semibold text-gray-900 dark:text-gray-100 mb-4">Sledujte nás</h4>
+                        <a href="https://www.linkedin.com/company/grove-tech-ai" target="_blank" rel="noopener noreferrer" 
+                           class="inline-flex items-center gap-2 text-brand-blue hover:text-blue-600 transition-colors">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
+                            LinkedIn
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: ContactSection -->
+
+    <!-- Footer -->
+    <!-- @COMPONENT: Footer [links and legal information] -->
+    <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 theme-transition">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-8 h-8 bg-gradient-to-br from-brand-blue to-brand-green rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                            </svg>
+                        </div>
+                        <span class="font-semibold text-lg text-gray-900 dark:text-gray-100">Grove Tech AI</span>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">
+                        AI vývojáři a systémoví integrátoři. Specializujeme se na integraci umělé inteligence do reálných procesů.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="mailto:info@grovetechai.com" class="text-gray-600 dark:text-gray-400 hover:text-brand-blue transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                        </a>
+                        <a href="https://www.linkedin.com/company/grove-tech-ai" target="_blank" rel="noopener noreferrer" class="text-gray-600 dark:text-gray-400 hover:text-brand-blue transition-colors">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-gray-900 dark:text-gray-100 mb-4">Rychlé odkazy</h4>
+                    <div class="space-y-2">
+                        <a href="#about" class="block text-gray-600 dark:text-gray-400 hover:text-brand-blue transition-colors">O nás</a>
+                        <a href="#usecases" class="block text-gray-600 dark:text-gray-400 hover:text-brand-blue transition-colors">Use Cases</a>
+                        <a href="#contact" class="block text-gray-600 dark:text-gray-400 hover:text-brand-blue transition-colors">Kontakt</a>
+                        <a href="#gdpr" class="block text-gray-600 dark:text-gray-400 hover:text-brand-blue transition-colors">GDPR</a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-gray-900 dark:text-gray-100 mb-4">Firemní údaje</h4>
+                    <div class="text-gray-600 dark:text-gray-400 space-y-1 text-sm">
+                        <p><strong>Grove Tech AI s.r.o.</strong></p>
+                        <p>IČO: 21707146</p>
+                        <p>DIČ: CZ21707146</p>
+                        <p>Varšavská 715/36</p>
+                        <p>Praha 2 – Vinohrady, 120 00</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-200 dark:border-gray-700 mt-8 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center text-sm text-gray-600 dark:text-gray-400">
+                    <p>&copy; 2024 Grove Tech AI s.r.o. Všechna práva vyhrazena.</p>
+                    <div class="flex gap-4 mt-4 md:mt-0">
+                        <a href="#gdpr" class="hover:text-brand-blue transition-colors">Zásady zpracování osobních údajů</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- @END_COMPONENT: Footer -->
+
+    <!-- GDPR Section (Hidden by default) -->
+    <!-- @COMPONENT: GDPRSection [privacy policy content] -->
+    <section id="gdpr" class="hidden py-20 bg-white dark:bg-gray-900 theme-transition">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8">Zásady zpracování osobních údajů</h1>
+            
+            <div class="prose prose-lg max-w-none text-gray-600 dark:text-gray-400">
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mt-8 mb-4">1. Základní informace</h2>
+                <p>
+                    Správcem osobních údajů je společnost Grove Tech AI s.r.o., IČO: 21707146, 
+                    se sídlem Varšavská 715/36, Praha 2 – Vinohrady, 120 00.
+                </p>
+
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mt-8 mb-4">2. Jaké údaje zpracováváme</h2>
+                <p>
+                    Zpracováváme pouze údaje, které nám poskytnete prostřednictvím kontaktního formuláře: 
+                    jméno, e-mailovou adresu, název společnosti (volitelně) a obsah vaší zprávy.
+                </p>
+
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mt-8 mb-4">3. Účel zpracování</h2>
+                <p>
+                    Vaše osobní údaje zpracováváme za účelem komunikace a poskytování našich služeb 
+                    na základě vašeho dotazu.
+                </p>
+
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mt-8 mb-4">4. Kontakt</h2>
+                <p>
+                    V případě dotazů ohledně zpracování osobních údajů nás kontaktujte na e-mailu: 
+                    <a href="mailto:info@grovetechai.com" class="text-brand-blue hover:text-blue-600">info@grovetechai.com</a>
+                </p>
+            </div>
+
+            <div class="mt-8">
+                <button onclick="document.getElementById('gdpr').classList.add('hidden')" 
+                        class="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                    Zavřít
+                </button>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: GDPRSection -->
+
+    <script>
+        // TODO: Implement business logic, API calls, and state management
+        
+        // Theme management
+        (function() {
+            const themeToggle = document.getElementById('themeToggle');
+            const html = document.documentElement;
+            
+            // Check for saved theme preference or default to 'light'
+            const currentTheme = localStorage.getItem('theme') || 
+                                (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            
+            if (currentTheme === 'dark') {
+                html.classList.add('dark');
+            }
+            
+            themeToggle?.addEventListener('click', function() {
+                html.classList.toggle('dark');
+                localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+            });
+        })();
+
+        // Mobile menu toggle
+        (function() {
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            
+            mobileMenuBtn?.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+        })();
+
+        // Language switcher functionality
+        (function() {
+            const langButtons = document.querySelectorAll('[data-lang]');
+            
+            langButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const lang = this.getAttribute('data-lang');
+                    
+                    // Update button states
+                    langButtons.forEach(b => {
+                        b.classList.remove('bg-brand-blue', 'text-white');
+                        b.classList.add('text-gray-600', 'dark:text-gray-400', 'hover:bg-gray-100', 'dark:hover:bg-gray-800');
+                    });
+                    
+                    this.classList.add('bg-brand-blue', 'text-white');
+                    this.classList.remove('text-gray-600', 'dark:text-gray-400', 'hover:bg-gray-100', 'dark:hover:bg-gray-800');
+                    
+                    // TODO: Implement language switching logic
+                    console.log('Language switched to:', lang);
+                });
+            });
+        })();
+
+        // Smooth scrolling for anchor links
+        (function() {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        })();
+
+        // GDPR section toggle
+        (function() {
+            document.querySelectorAll('a[href="#gdpr"]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const gdprSection = document.getElementById('gdpr');
+                    gdprSection.classList.remove('hidden');
+                    gdprSection.scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+        })();
+
+        // Form submission handler
+        (function() {
+            const contactForm = document.querySelector('form');
+            
+            contactForm?.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // TODO: Implement form validation and submission
+                // This should send data to /api/contact endpoint via Cloudflare Email Routing
+                console.log('Form submitted');
+                
+                // Show success message (placeholder)
+                alert('Děkujeme za váš dotaz! Ozveme se vám do 24 hodin.');
+            });
+        })();
+
+        // Intersection Observer for animations
+        (function() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe elements that should animate on scroll
+            document.querySelectorAll('.hover-lift').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        })();
+    </script>
+
+</body>
+</html>
