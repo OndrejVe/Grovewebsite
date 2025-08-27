@@ -35,9 +35,9 @@ export async function setupVite(app: Express, server: Server) {
     configFile: false,
     customLogger: {
       hasWarned: false,
-      info(msg) { log(msg, "vite"); },
-      warn(msg) { log(msg, "vite"); },
-      error(msg) { log(msg, "vite"); },
+      info(message) { log(message, "vite"); },
+      warn(message) { log(message, "vite"); },
+      error(message) { log(message, "vite"); },
       clearScreen() {},
     } as any,
   });
