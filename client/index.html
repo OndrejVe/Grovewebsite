@@ -13,13 +13,41 @@
 
     <!-- D-ID Mini Agent (floating widget) -->
     <script
-      type="module"
+      defer
       src="https://agent.d-id.com/v1/index.js"
       data-name="did-agent"
       data-mode="fabio"
       data-client-key="YXV0aDB8Njc0OTlhMjZjZGMxNGFmOWE0OTFkZjAwOkpsZkZaY21QbnQ2LVBjWUkzWEp5Zw=="
       data-agent-id="agt_sxjRZJxP"
       data-monitor="true">
+    </script>
+
+    <!-- D-ID visibility guard (ensures bubble is on top and visible) -->
+    <style id="did-visibility-guard">
+      [data-did-agent-root], #did-agent-root, iframe[src*="d-id.com"] {
+        z-index: 2147483647 !important;
+        position: fixed !important;
+        right: 24px !important;
+        bottom: 24px !important;
+        pointer-events: auto !important;
+      }
+    </style>
+    <script>
+      (function(){
+        function promote(){
+          const el = document.querySelector('[data-did-agent-root], #did-agent-root, iframe[src*="d-id.com"]');
+          if(!el) return;
+          el.style.zIndex = '2147483647';
+          if(!getComputedStyle(el).position || getComputedStyle(el).position === 'static') el.style.position = 'fixed';
+          if(!el.style.right && !el.style.left) el.style.right = '24px';
+          if(!el.style.bottom && !el.style.top) el.style.bottom = '24px';
+        }
+        promote();
+        let tries = 0; const iv = setInterval(()=>{ promote(); if(++tries>20) clearInterval(iv); }, 500);
+        const mo = new MutationObserver(()=>promote());
+        mo.observe(document.documentElement, {childList:true, subtree:true});
+        setTimeout(()=>mo.disconnect(), 15000);
+      })();
     </script>
 
     <!-- Runtime subtitle swap (dočasné; až přepíšeme komponentu, odstraníme) -->
