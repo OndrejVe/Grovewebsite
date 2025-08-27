@@ -27,29 +27,38 @@
     </script>
 <script>
   (function(){
-    function widgetPresent(){
-      return document.querySelector('[data-did-agent-root], #did-agent-root, iframe[src*="d-id.com"]');
-    }
-    function reinject(){
-      if (widgetPresent()) return;
-      var s = document.querySelector('script[data-name="did-agent"]');
-      if (!s) return;
-      var t = document.createElement('script');
-      t.type = 'module';
-      t.crossOrigin = 'anonymous';
-      t.src = 'https://agent.d-id.com/v1/index.js';
-      t.setAttribute('data-name', 'did-agent');
-      t.setAttribute('data-mode', s.getAttribute('data-mode') || 'fabio');
-      t.setAttribute('data-client-key', s.getAttribute('data-client-key'));
-      t.setAttribute('data-agent-id', s.getAttribute('data-agent-id'));
-      if (s.getAttribute('data-start-open')) t.setAttribute('data-start-open', s.getAttribute('data-start-open'));
-      if (s.getAttribute('data-monitor')) t.setAttribute('data-monitor', s.getAttribute('data-monitor'));
-      document.body.appendChild(t);
-    }
-    // Try a few times in case the first load was blocked by CSP caching
-    setTimeout(reinject, 1200);
-    setTimeout(reinject, 3000);
-  })();
+  // Fallback injector that does NOT rely on a pre-existing <script data-name="did-agent"> tag.
+  const DID_CLIENT_KEY = "YXV0aDB8Njc0OTlhMjZjZGMxNGFmOWE0OTFkZjAwOkpsZkZaY21QbnQ2LVBjWUkzWEp5Zw==";
+  const DID_AGENT_ID   = "agt_sxjRZJxP";
+  const DID_MODE       = "fabio";
+
+  function widgetPresent(){
+    return document.querySelector('[data-did-agent-root], #did-agent-root, iframe[src*="d-id.com"]');
+  }
+
+  function inject(){
+    if (widgetPresent()) return;
+    const t = document.createElement('script');
+    t.type = 'module';
+    t.crossOrigin = 'anonymous';
+    t.src = 'https://agent.d-id.com/v1/index.js';
+    t.setAttribute('data-name', 'did-agent');
+    t.setAttribute('data-mode', DID_MODE);
+    t.setAttribute('data-client-key', DID_CLIENT_KEY);
+    t.setAttribute('data-agent-id', DID_AGENT_ID);
+    t.setAttribute('data-start-open', 'true');
+    t.setAttribute('data-monitor', 'true');
+    t.addEventListener('load', () => console.info('[D-ID] agent script loaded'));
+    t.addEventListener('error', (e) => console.error('[D-ID] agent script failed to load', e));
+    document.body.appendChild(t);
+  }
+
+  // Try now + a few retries (in case of cascade loads / hydration timing)
+  if (!widgetPresent()) inject();
+  setTimeout(inject, 1200);
+  setTimeout(inject, 3000);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') setTimeout(inject, 500); });
+})();
 </script>
 
     <!-- D-ID visibility guard (ensures bubble is on top and visible) -->
