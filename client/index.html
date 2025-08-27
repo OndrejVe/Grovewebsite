@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Relaxed CSP for D-ID agent in preview (allows script/connect/frame to *.d-id.com) -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https://agent.d-id.com; connect-src 'self' https://agent.d-id.com https://api.d-id.com https://*.d-id.com; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; frame-src https://agent.d-id.com https://*.d-id.com;" />
     <title>Grove Tech AI</title>
   </head>
   <body>
@@ -19,6 +21,7 @@
       data-mode="fabio"
       data-client-key="YXV0aDB8Njc0OTlhMjZjZGMxNGFmOWE0OTFkZjAwOkpsZkZaY21QbnQ2LVBjWUkzWEp5Zw=="
       data-agent-id="agt_sxjRZJxP"
+      data-start-open="true"
       data-monitor="true">
     </script>
 
