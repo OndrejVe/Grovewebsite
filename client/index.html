@@ -37,14 +37,18 @@
             .trim();
         }
 
+        function maybeReplace(el) {
+          // Only replace leaf nodes (no element children) to avoid nuking containers
+          if (el.children && el.children.length > 0) return;
+          const txt = norm(el.textContent);
+          if (!txt) return;
+          if (txt === norm(CZ_NEEDLE)) { el.textContent = CZ_NEW; }
+          if (txt === norm(EN_NEEDLE)) { el.textContent = EN_NEW; }
+        }
+
         function replaceAllOnce() {
-          const nodes = Array.from(document.querySelectorAll('p, div, span'));
-          for (const el of nodes) {
-            const txt = norm(el.textContent);
-            if (!txt) continue;
-            if (txt.includes(CZ_NEEDLE)) { el.textContent = CZ_NEW; }
-            if (txt.includes(EN_NEEDLE)) { el.textContent = EN_NEW; }
-          }
+          const nodes = Array.from(document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, div, span'));
+          for (const el of nodes) maybeReplace(el);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
