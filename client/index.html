@@ -25,9 +25,12 @@
     <!-- Runtime subtitle swap (dočasné; až přepíšeme komponentu, odstraníme) -->
     <script>
       (function () {
-        const CZ_NEEDLE = "AI vývojáři a systémoví integrátoři";
+        const CZ_NEEDLE_SHORT = "AI vývojáři a systémoví integrátoři";
+        const CZ_NEEDLE_FULL  = "AI vývojáři a systémoví integrátoři. Specializujeme se na integraci umělé inteligence do reálných procesů.";
         const CZ_NEW = "Stavíme AI asistenty a avatary, kteří snižují rutinní práci až o 70 % a přinášejí měřitelné výsledky do vašich procesů.";
-        const EN_NEEDLE = "AI developers and systems integrators";
+
+        const EN_NEEDLE_SHORT = "AI developers and systems integrators";
+        const EN_NEEDLE_FULL  = "AI developers and systems integrators. We specialize in integrating artificial intelligence into real-world processes.";
         const EN_NEW = "We build AI assistants and avatars that cut routine work by up to 70% and deliver measurable results to your operations.";
 
         function norm(s){
@@ -42,8 +45,13 @@
           if (el.children && el.children.length > 0) return;
           const txt = norm(el.textContent);
           if (!txt) return;
-          if (txt === norm(CZ_NEEDLE)) { el.textContent = CZ_NEW; }
-          if (txt === norm(EN_NEEDLE)) { el.textContent = EN_NEW; }
+          const czShort = norm(CZ_NEEDLE_SHORT);
+          const czFull  = norm(CZ_NEEDLE_FULL);
+          const enShort = norm(EN_NEEDLE_SHORT);
+          const enFull  = norm(EN_NEEDLE_FULL);
+
+          if (txt.includes(czShort) || txt === czFull) { el.textContent = CZ_NEW; return; }
+          if (txt.includes(enShort) || txt === enFull) { el.textContent = EN_NEW; return; }
         }
 
         function replaceAllOnce() {
