@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Relaxed CSP for D-ID agent in preview (allows script/connect/frame to *.d-id.com) -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https://*.d-id.com; connect-src 'self' https://*.d-id.com wss://*.d-id.com; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; frame-src https://*.d-id.com;" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://agent.d-id.com https://*.d-id.com; connect-src 'self' https://*.d-id.com wss://*.d-id.com; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; frame-src https://*.d-id.com;" />
     <title>Grove Tech AI</title>
   </head>
   <body>
@@ -16,6 +16,7 @@
     <!-- D-ID Mini Agent (floating widget) -->
     <script
       type="module"
+      crossorigin="anonymous"
       src="https://agent.d-id.com/v1/index.js"
       data-name="did-agent"
       data-mode="fabio"
@@ -24,6 +25,32 @@
       data-start-open="true"
       data-monitor="true">
     </script>
+<script>
+  (function(){
+    function widgetPresent(){
+      return document.querySelector('[data-did-agent-root], #did-agent-root, iframe[src*="d-id.com"]');
+    }
+    function reinject(){
+      if (widgetPresent()) return;
+      var s = document.querySelector('script[data-name="did-agent"]');
+      if (!s) return;
+      var t = document.createElement('script');
+      t.type = 'module';
+      t.crossOrigin = 'anonymous';
+      t.src = 'https://agent.d-id.com/v1/index.js';
+      t.setAttribute('data-name', 'did-agent');
+      t.setAttribute('data-mode', s.getAttribute('data-mode') || 'fabio');
+      t.setAttribute('data-client-key', s.getAttribute('data-client-key'));
+      t.setAttribute('data-agent-id', s.getAttribute('data-agent-id'));
+      if (s.getAttribute('data-start-open')) t.setAttribute('data-start-open', s.getAttribute('data-start-open'));
+      if (s.getAttribute('data-monitor')) t.setAttribute('data-monitor', s.getAttribute('data-monitor'));
+      document.body.appendChild(t);
+    }
+    // Try a few times in case the first load was blocked by CSP caching
+    setTimeout(reinject, 1200);
+    setTimeout(reinject, 3000);
+  })();
+</script>
 
     <!-- D-ID visibility guard (ensures bubble is on top and visible) -->
     <style id="did-visibility-guard">
