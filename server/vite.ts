@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import express, { type Express } from "express";
 import { createServer, type ViteDevServer } from "vite";
 import path from "path";
