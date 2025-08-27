@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Example</title>
+</head>
+<body>
+  <!-- D-ID Mini Agent (floating widget) -->
+  <script
+    type="module"
+    src="https://agent.d-id.com/v1/index.js"
+    data-name="did-agent"
+    data-mode="fabio"
+    data-client-key="YXV0aDB8Njc0OTlhMjZjZGMxNGFmOWE0OTFkZjAwOkpsZkZaY21QbnQ2LVBjWUkzWEp5Zw=="
+    data-agent-id="agt_sxjRZJxP"
+    data-monitor="true">
+  </script>
+
+  <!-- Runtime subtitle swap (tolerant matching; will be removed once component text is updated) -->
+  <script>
+    (function () {
+      const CZ_NEEDLE = "AI vývojáři a systémoví integrátoři";
+      const CZ_NEW = "Stavíme AI asistenty a avatary, kteří snižují rutinní práci až o 70 % a přinášejí měřitelné výsledky do vašich procesů.";
+      const EN_NEEDLE = "AI developers and systems integrators";
+      const EN_NEW = "We build AI assistants and avatars that cut routine work by up to 70% and deliver measurable results to your operations.";
+
+      function norm(s){
+        return (s||"")
+          .replace(/\s+/g, " ")
+          .replace(/\u00A0/g, " ")
+          .trim();
+      }
+
+      function replaceAllOnce() {
+        const nodes = Array.from(document.querySelectorAll('p, div, span'));
+        for (const el of nodes) {
+          const txt = norm(el.textContent);
+          if (!txt) continue;
+          if (txt.includes(CZ_NEEDLE)) { el.textContent = CZ_NEW; }
+          if (txt.includes(EN_NEEDLE)) { el.textContent = EN_NEW; }
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        replaceAllOnce();
+        setTimeout(replaceAllOnce, 100);
+        setTimeout(replaceAllOnce, 500);
+        setTimeout(replaceAllOnce, 1500);
+      });
+
+      const mo = new MutationObserver(() => replaceAllOnce());
+      mo.observe(document.documentElement, { childList: true, subtree: true, characterData: true });
+      setTimeout(() => mo.disconnect(), 10000);
+    })();
+  </script>
+</body>
+</html>
