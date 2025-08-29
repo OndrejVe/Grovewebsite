@@ -1,0 +1,43 @@
+// File deleted: client/<!-- Live AI Avatar Video card (drop‑in).html
+
+// Rewritten file: client/src/pages/index.tsx
+import React, { useEffect } from 'react';
+...
+useEffect(() => {
+  const playBtn = document.getElementById('live-avatar-video-play');
+  const vid = document.getElementById('live-avatar-video-el') as HTMLVideoElement | null;
+  if (playBtn && vid) {
+    playBtn.addEventListener('click', () => {
+      (playBtn as HTMLElement).style.display = 'none';
+      vid.play();
+    });
+    vid.addEventListener('play', () => { (playBtn as HTMLElement).style.display = 'none'; });
+    vid.addEventListener('pause', () => { (playBtn as HTMLElement).style.display = ''; });
+  }
+}, []);
+...
+// In the JSX return, replace the card with heading "Live AI Avatar Demo" with:
+
+<section id="live-ai-avatar-video" className="mx-auto max-w-5xl px-6 py-10">
+  <div className="rounded-2xl border border-indigo-200/50 bg-white/60 shadow-[0_8px_40px_-12px_rgba(79,70,229,0.25)] p-5 sm:p-7">
+    <div className="relative w-full overflow-hidden rounded-xl ring-1 ring-indigo-100/60">
+      <div className="relative w-full" style={{paddingTop:'56.25%'}}>
+        <video id="live-avatar-video-el" className="absolute inset-0 h-full w-full object-cover" preload="metadata" playsInline controls poster="/media/ai-demo.jpg">
+          <source src="/videos/Generativni_ai.mp4" type="video/mp4" />
+          Your browser does not support HTML5 video.
+        </video>
+        <button type="button" id="live-avatar-video-play" className="absolute inset-0 grid place-items-center bg-black/20 hover:bg-black/25 transition" aria-label="Přehrát video">
+          <span className="inline-grid place-items-center h-16 w-16 rounded-full bg-white/95 shadow ring-1 ring-black/5">▶</span>
+        </button>
+      </div>
+    </div>
+    <div className="mt-4 text-center">
+      <h3 className="text-lg font-semibold leading-tight">Představení Grove Tech AI</h3>
+      <p className="mt-2 text-sm text-slate-600">AI asistent s lidskou tváří • napojení na ERP/CRM • expertní integrace</p>
+      <div className="mt-3 inline-flex items-center gap-2 text-sm text-emerald-600">
+        <span className="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
+        Aktivní
+      </div>
+    </div>
+  </div>
+</section>
