@@ -1,226 +1,83 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+  <!-- Runtime swap: nahradí media v kartě "Live AI Avatar Demo" videem (robust verze) -->
+  <script>
+    (function () {
+      var VIDEO_SRC = '/videos/Generativni_ai.mp4';
 
-// Vite config for Cloudflare Pages: the SPA lives in /client
-export default defineConfig({
-  // Tell Vite that our app root is the /client folder
-  root: 'client',
-
-  plugins: [react()],
-
-  build: {
-    // Output build into /client/dist (Cloudflare v2 root dir strategy will pick this up)
-    outDir: 'dist',
-    emptyOutDir: true,
-  },
-
-  server: {
-    port: 5173,
-  },
-
-  preview: {
-    port: 4173,
-  },
-});
-<!doctype html>
-<html lang="cs">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Relaxed CSP for D-ID agent in preview (allows script/connect/frame to *.d-id.com) -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://agent.d-id.com https://*.d-id.com; connect-src 'self' https://*.d-id.com wss://*.d-id.com; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; frame-src https://*.d-id.com;" />
-    <title>Grove Tech AI</title>
-  </head>
-  <body>
-    <div id="root"></div>
-
-    <!-- SPA entry point -->
-    <script type="module" src="/src/main.tsx"></script>
-
-    <!-- D-ID Mini Agent (floating widget) -->
-    <script
-      type="module"
-      crossorigin="anonymous"
-      src="https://agent.d-id.com/v1/index.js"
-      data-name="did-agent"
-      data-mode="fabio"
-      data-client-key="YXV0aDB8Njc0OTlhMjZjZGMxNGFmOWE0OTFkZjAwOkpsZkZaY21QbnQ2LVBjWUkzWEp5Zw=="
-      data-agent-id="agt_sxjRZJxP"
-      data-start-open="true"
-      data-monitor="true">
-    </script>
-    <script>
-      (function(){
-      // Fallback injector that does NOT rely on a pre-existing <script data-name="did-agent"> tag.
-      const DID_CLIENT_KEY = "YXV0aDB8Njc0OTlhMjZjZGMxNGFmOWE0OTFkZjAwOkpsZkZaY21QbnQ2LVBjWUkzWEp5Zw==";
-      const DID_AGENT_ID   = "agt_sxjRZJxP";
-      const DID_MODE       = "fabio";
-
-      function widgetPresent(){
-        return document.querySelector('[data-did-agent-root], #did-agent-root, iframe[src*="d-id.com"]');
+      function buildVideo() {
+        var wrap = document.createElement('div');
+        wrap.className = 'aspect-video overflow-hidden rounded-2xl';
+        var v = document.createElement('video');
+        v.src = VIDEO_SRC;
+        v.autoplay = true;
+        v.muted = true;
+        v.loop = true;
+        v.playsInline = true;
+        v.preload = 'metadata';
+        v.className = 'h-full w-full object-cover';
+        wrap.appendChild(v);
+        return wrap;
       }
 
-      function inject(){
-        if (widgetPresent()) return;
-        const t = document.createElement('script');
-        t.type = 'module';
-        t.crossOrigin = 'anonymous';
-        t.src = 'https://agent.d-id.com/v1/index.js';
-        t.setAttribute('data-name', 'did-agent');
-        t.setAttribute('data-mode', DID_MODE);
-        t.setAttribute('data-client-key', DID_CLIENT_KEY);
-        t.setAttribute('data-agent-id', DID_AGENT_ID);
-        t.setAttribute('data-start-open', 'true');
-        t.setAttribute('data-monitor', 'true');
-        t.addEventListener('load', () => console.info('[D-ID] agent script loaded'));
-        t.addEventListener('error', (e) => console.error('[D-ID] agent script failed to load', e));
-        document.body.appendChild(t);
-      }
-
-      // Try now + a few retries (in case of cascade loads / hydration timing)
-      if (!widgetPresent()) inject();
-      setTimeout(inject, 1200);
-      setTimeout(inject, 3000);
-      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') setTimeout(inject, 500); });
-    })();
-    </script>
-
-    <!-- D-ID visibility guard (ensures bubble is on top and visible) -->
-    <style id="did-visibility-guard">
-      [data-did-agent-root], #did-agent-root, iframe[src*="d-id.com"] {
-        z-index: 2147483647 !important;
-        position: fixed !important;
-        right: 24px !important;
-        bottom: 24px !important;
-        pointer-events: auto !important;
-      }
-    </style>
-    <script>
-      (function(){
-        function promote(){
-          const el = document.querySelector('[data-did-agent-root], #did-agent-root, iframe[src*="d-id.com"]');
-          if(!el) return;
-          el.style.zIndex = '2147483647';
-          if(!getComputedStyle(el).position || getComputedStyle(el).position === 'static') el.style.position = 'fixed';
-          if(!el.style.right && !el.style.left) el.style.right = '24px';
-          if(!el.style.bottom && !el.style.top) el.style.bottom = '24px';
-        }
-        promote();
-        let tries = 0; const iv = setInterval(()=>{ promote(); if(++tries>20) clearInterval(iv); }, 500);
-        const mo = new MutationObserver(()=>promote());
-        mo.observe(document.documentElement, {childList:true, subtree:true});
-        setTimeout(()=>mo.disconnect(), 15000);
-      })();
-    </script>
-
-    <!-- Runtime subtitle swap (dočasné; až přepíšeme komponentu, odstraníme) -->
-    <script>
-      (function () {
-        const CZ_NEEDLE_SHORT = "AI vývojáři a systémoví integrátoři";
-        const CZ_NEEDLE_FULL  = "AI vývojáři a systémoví integrátoři. Specializujeme se na integraci umělé inteligence do reálných procesů.";
-        const CZ_NEW = "Stavíme AI asistenty a avatary, kteří snižují rutinní práci až o 70 % a přinášejí měřitelné výsledky do vašich procesů.";
-
-        const EN_NEEDLE_SHORT = "AI developers and systems integrators";
-        const EN_NEEDLE_FULL  = "AI developers and systems integrators. We specialize in integrating artificial intelligence into real-world processes.";
-        const EN_NEW = "We build AI assistants and avatars that cut routine work by up to 70% and deliver measurable results to your operations.";
-
-        function norm(s){
-          return (s||"")
-            .replace(/\s+/g, " ")
-            .replace(/\u00A0/g, " ")
-            .trim();
-        }
-
-        function maybeReplace(el) {
-          // Only replace leaf nodes (no element children) to avoid nuking containers
-          if (el.children && el.children.length > 0) return;
-          const txt = norm(el.textContent);
-          if (!txt) return;
-          const czShort = norm(CZ_NEEDLE_SHORT);
-          const czFull  = norm(CZ_NEEDLE_FULL);
-          const enShort = norm(EN_NEEDLE_SHORT);
-          const enFull  = norm(EN_NEEDLE_FULL);
-
-          if (txt.includes(czShort) || txt === czFull) { el.textContent = CZ_NEW; return; }
-          if (txt.includes(enShort) || txt === enFull) { el.textContent = EN_NEW; return; }
-        }
-
-        function replaceAllOnce() {
-          const nodes = Array.from(document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, div, span'));
-          for (const el of nodes) maybeReplace(el);
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-          replaceAllOnce();
-          setTimeout(replaceAllOnce, 100);
-          setTimeout(replaceAllOnce, 500);
-          setTimeout(replaceAllOnce, 1500);
+      function findCard() {
+        // Najdi heading
+        var headings = Array.from(document.querySelectorAll('h1,h2,h3,h4'));
+        var target = headings.find(function (h) {
+          return (h.textContent || '').replace(/\s+/g,' ').trim().toLowerCase() === 'live ai avatar demo';
         });
+        if (!target) return null;
+        // Vyber nejbližší větší kontejner (dvě úrovně nahoru obvykle drží card)
+        var card = target.closest('div');
+        // V některých layoutech je card o úroveň výš
+        if (card && card.parentElement && card.parentElement.querySelector && card.parentElement.querySelector('h3') === target) {
+          card = card.parentElement;
+        }
+        return card || null;
+      }
 
-        const mo = new MutationObserver(() => replaceAllOnce());
-        mo.observe(document.documentElement, { childList: true, subtree: true, characterData: true });
-        setTimeout(() => mo.disconnect(), 10000);
-      })();
-    </script>
+      function swap() {
+        var card = findCard();
+        if (!card) return false;
 
-    <!-- Runtime swap: nahradí media v kartě "Live AI Avatar Demo" videem -->
-    <script>
-      (function () {
-        var VIDEO_SRC = '/videos/Generativni_ai.mp4';
-
-        function swap() {
-          // 1) najdi nadpis karty
-          var headings = Array.from(document.querySelectorAll('h3, h2'));
-          var target = headings.find(function (h) {
-            return (h.textContent || '').trim().toLowerCase() === 'live ai avatar demo';
-          });
-          if (!target) return false;
-
-          // 2) kontejner karty
-          var card = target.closest('div');
-          if (!card) return false;
-
-          // 3) existující media wrapper
-          var media =
-            card.querySelector('video, img, .aspect-video, [data-media]') ||
-            Array.from(card.querySelectorAll('div')).find(function (d) {
-              return d.querySelector && (d.querySelector('img') || (d.className || '').includes('aspect-video'));
-            });
-
-          // 4) nový 16:9 video wrapper
-          var wrap = document.createElement('div');
-          wrap.className = 'aspect-video overflow-hidden rounded-2xl';
-
-          var v = document.createElement('video');
-          v.src = VIDEO_SRC;
-          v.autoplay = true;
-          v.muted = true;
-          v.loop = true;
-          v.playsInline = true;
-          v.preload = 'metadata';
-          v.className = 'h-full w-full object-cover';
-          wrap.appendChild(v);
-
-          // 5) výměna
-          var firstImg = card.querySelector('img');
-          if (firstImg && firstImg.parentElement) {
-            firstImg.parentElement.replaceWith(wrap);
-          } else if (media && media.parentElement) {
-            media.parentElement.replaceChild(wrap, media);
-          } else {
-            card.insertBefore(wrap, card.firstChild);
-          }
+        // 1) zkus nahradit IMG v rámci karty
+        var img = card.querySelector('img');
+        if (img && img.parentElement) {
+          img.parentElement.replaceWith(buildVideo());
           return true;
         }
 
-        // spuštění + čekání na render Reactu
-        if (!swap()) {
-          var mo = new MutationObserver(function () {
-            if (swap()) mo.disconnect();
-          });
-          mo.observe(document.documentElement, { childList: true, subtree: true });
+        // 2) zkus nahradit existující video/placeholder wrapper
+        var media = card.querySelector('.aspect-video, [data-media], picture');
+        if (media && media.parentElement) {
+          media.parentElement.replaceChild(buildVideo(), media);
+          return true;
         }
-      })();
-    </script>
-  </body>
-</html>
+
+        // 3) fallback – vlož video na začátek card
+        card.insertBefore(buildVideo(), card.firstChild);
+        return true;
+      }
+
+      function runWithRetries() {
+        var tries = 0;
+        var maxTries = 12; // cca 6 s celkem
+        (function tick(){
+          if (swap()) return;
+          if (++tries >= maxTries) return;
+          setTimeout(tick, 500);
+        })();
+      }
+
+      if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        runWithRetries();
+      } else {
+        document.addEventListener('DOMContentLoaded', runWithRetries);
+      }
+
+      // Navíc sleduj mutace pro případ pozdější hydratace
+      var mo = new MutationObserver(function () {
+        swap();
+      });
+      mo.observe(document.documentElement, { childList: true, subtree: true });
+      setTimeout(function(){ try { mo.disconnect(); } catch(e){} }, 8000);
+    })();
+  </script>
