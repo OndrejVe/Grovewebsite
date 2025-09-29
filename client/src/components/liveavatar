@@ -1,14 +1,33 @@
-<video
-  autoPlay
-  muted
-  loop
-  playsInline
-  style={{
-    width: "100%",
-    borderRadius: "16px",
-    boxShadow: "0 10px 25px rgba(0,0,0,0.15)"
-  }}
->
-  <source src="/WEB.mp4" type="video/mp4" />
-  Váš prohlížeč nepodporuje přehrávání videa.
-</video>
+"use client";
+
+import React from "react";
+
+export default function LiveAvatar() {
+  return (
+    <div
+      style={{
+        maxWidth: "640px",
+        margin: "0 auto",
+        padding: "1rem",
+        borderRadius: "20px",
+        backgroundColor: "#fff",
+        boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
+      }}
+    >
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        style={{
+          width: "100%",
+          borderRadius: "16px",
+          boxShadow: "0 10px 25px rgba(0,0,0,0.15)",
+        }}
+      >
+        <source src="/WEB.mp4" type="video/mp4" />
+        Váš prohlížeč nepodporuje přehrávání videa.
+      </video>
+    </div>
+  );
+}
