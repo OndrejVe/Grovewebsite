@@ -15,7 +15,7 @@ export default function LiveAvatar() {
           boxShadow: "0 10px 25px rgba(0,0,0,0.15)"
         }}
       >
-        <source src="/videos/avatar-demo.mp4" type="video/mp4" />
+        <source src="/videos/WEB.mp4" type="video/mp4" />
         Váš prohlížeč nepodporuje přehrávání videa.
       </video>
     </section>
