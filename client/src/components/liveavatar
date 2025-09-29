@@ -1,0 +1,23 @@
+export default function LiveAvatar() {
+  return (
+    <section style={{ margin: "60px auto", maxWidth: "640px" }}>
+      <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", marginBottom: "1rem" }}>
+        Live AI Avatar Demo
+      </h2>
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        style={{
+          width: "100%",
+          borderRadius: "16px",
+          boxShadow: "0 10px 25px rgba(0,0,0,0.15)"
+        }}
+      >
+        <source src="/videos/avatar-demo.mp4" type="video/mp4" />
+        Váš prohlížeč nepodporuje přehrávání videa.
+      </video>
+    </section>
+  );
+}
